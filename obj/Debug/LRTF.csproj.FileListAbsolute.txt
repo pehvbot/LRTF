@@ -1,0 +1,44 @@
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/LRTF.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/LRTF.pdb
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/Assembly-CSharp-firstpass.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/Assembly-CSharp.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/TestFlightAPI.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/TestFlightCore.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/UnityEngine.CoreModule.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/UnityEngine.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/UnityEngine.PhysicsModule.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/UnityEngine.UI.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/UnityEngine.AnimationModule.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/UnityEngine.IMGUIModule.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/UnityEngine.UnityWebRequestModule.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/UnityEngine.TextRenderingModule.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/UnityEngine.UIModule.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/UnityEngine.InputLegacyModule.dll
+/Users/haslam/Projects/LRTF/LRTF/bin/Debug/UnityEngine.JSONSerializeModule.dll
+/Users/haslam/Projects/LRTF/LRTF/obj/Debug/LRTF.csproj.AssemblyReference.cache
+/Users/haslam/Projects/LRTF/LRTF/obj/Debug/LRTF.csproj.CoreCompileInputs.cache
+/Users/haslam/Projects/LRTF/LRTF/obj/Debug/LRTF.csproj.CopyComplete
+/Users/haslam/Projects/LRTF/LRTF/obj/Debug/LRTF.dll
+/Users/haslam/Projects/LRTF/LRTF/obj/Debug/LRTF.pdb
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/LRTF.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/LRTF.pdb
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/Assembly-CSharp-firstpass.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/Assembly-CSharp.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/TestFlightAPI.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/TestFlightCore.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/UnityEngine.CoreModule.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/UnityEngine.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/UnityEngine.UI.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/UnityEngine.IMGUIModule.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/UnityEngine.PhysicsModule.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/UnityEngine.UIModule.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/UnityEngine.InputLegacyModule.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/UnityEngine.AnimationModule.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/UnityEngine.UnityWebRequestModule.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/UnityEngine.TextRenderingModule.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/bin/Debug/UnityEngine.JSONSerializeModule.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/obj/Debug/LRTF.csproj.CoreCompileInputs.cache
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/obj/Debug/LRTF.csproj.CopyComplete
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/obj/Debug/LRTF.dll
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/obj/Debug/LRTF.pdb
+/Users/haslam/Google Drive/kerbal/LRTF/LRTF/obj/Debug/LRTF.csproj.AssemblyReference.cache
