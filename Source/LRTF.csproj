@@ -47,16 +47,46 @@
       <HintPath>..\dlls_1_12_2\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="TestFlight">
-      <HintPath>..\..\..\KSP 1.12.2 LRTF\GameData\TestFlight\Plugins\TestFlight.dll</HintPath>
+      <HintPath>..\dlls_1_12_2\TestFlight.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FlightDataRecorder_LRTanks.cs" />
-    <Compile Include="FlightDataRecorder_LRAvionics.cs" />
-    <Compile Include="TestFlightFailureBase_LRRCS.cs" />
-    <Compile Include="TestFlightFailure_LRRCSShutdown.cs" />
-    <Compile Include="FlightDataRecorder_LRRCS.cs" />
+    
+    <Compile Include="LRTFFailureBase_Wheel.cs" />
+    <Compile Include="LRTFFailureBase_Generic.cs" />
+    <Compile Include="LRTFFailureBase.cs" />
+    <Compile Include="LRTFReliability_TestRepair.cs" />
+    <Compile Include="LRTFFailureBase_ReactionWheel.cs" />
+    <Compile Include="LRTFGameSettings.cs" />
+    <Compile Include="LRTFFailureBase_RCS.cs" />
+    <Compile Include="LRTFFailureBase_Avionics.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsAxis.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsThrustJam.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_SASFailure.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsTotal.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsPartial.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsClamp.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsDeadzone.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsGlitch.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsInvert.cs" />
+    <Compile Include="failures\resources\LRTFFailure_ResourceLeak.cs" />
+    <Compile Include="failures\resources\LRTFFailure_ResourcePump.cs" />
+    <Compile Include="failures\reactionwheels\LRTFFailure_ReactionBroken.cs" />
+    <Compile Include="failures\reactionwheels\LRTFFailure_ReactionTorque.cs" />
+    <Compile Include="failures\parachutes\LRTFFailure_ParachuteFail.cs" />
+    <Compile Include="failures\parachutes\LRTFFailure_ParachutePartial.cs" />
+    <Compile Include="failures\RCS\LRTFFailure_RCSShutdown.cs" />
+    <Compile Include="failures\wheels\LRTFFailure_WheelSteer.cs" />
+    <Compile Include="failures\wheels\LRTFFailure_WheelMotor.cs" />
+    <Compile Include="failures\wheels\LRTFFailure_WheelBreak.cs" />
+    <Compile Include="failures\engines\LRTFFailure_LockGimbal.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_Tanks.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_RCS.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_Wheels.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_Parachutes.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_Avionics.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_ReactionWheels.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
