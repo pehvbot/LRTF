@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CB940433-173F-4662-9AAB-1235E7073DDD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>LRTF</RootNamespace>
+    <AssemblyName>LRTF</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\dlls_1_12_2\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\dlls_1_12_2\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="TestFlightAPI">
+      <HintPath>..\dlls_1_12_2\TestFlightAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="TestFlightCore">
+      <HintPath>..\dlls_1_12_2\TestFlightCore.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\dlls_1_12_2\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\dlls_1_12_2\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="TestFlight">
+      <HintPath>..\..\..\KSP 1.12.2 LRTF\GameData\TestFlight\Plugins\TestFlight.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LRTFFailureBase_RCS.cs" />
+    <Compile Include="LRTFFailureBase.cs" />
+    <Compile Include="LRTFGameSettings.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_Avionics.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_RCS.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_Tanks.cs" />
+    <Compile Include="LRTFFailureBase_Generic.cs" />
+    <Compile Include="LRTFFailureBase_ReactionWheel.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_ReactionWheels.cs" />
+    <Compile Include="LRTFReliability_TestRepair.cs" />
+    <Compile Include="LRTFFailureBase_Avionics.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsAxis.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsClamp.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsDeadzone.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsGlitch.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsInvert.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsPartial.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsTotal.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsThrustJam.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_Parachutes.cs" />
+    <Compile Include="failures\engines\LRTFFailure_LockGimbal.cs" />
+    <Compile Include="failures\RCS\LRTFFailure_RCSShutdown.cs" />
+    <Compile Include="failures\parachutes\LRTFFailure_ParachuteFail.cs" />
+    <Compile Include="failures\parachutes\LRTFFailure_ParachutePartial.cs" />
+    <Compile Include="failures\reactionwheels\LRTFFailure_ReactionBroken.cs" />
+    <Compile Include="failures\reactionwheels\LRTFFailure_ReactionTorque.cs" />
+    <Compile Include="failures\resources\LRTFFailure_ResourceLeak.cs" />
+    <Compile Include="failures\resources\LRTFFailure_ResourcePump.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_SASFailure.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_Wheels.cs" />
+    <Compile Include="failures\wheels\LRTFFailure_WheelBreak.cs" />
+    <Compile Include="LRTFFailureBase_Wheel.cs" />
+    <Compile Include="failures\wheels\LRTFFailure_WheelMotor.cs" />
+    <Compile Include="failures\wheels\LRTFFailure_WheelSteer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="recorders\" />
+    <Folder Include="failures\" />
+    <Folder Include="failures\avionics\" />
+    <Folder Include="failures\engines\" />
+    <Folder Include="failures\RCS\" />
+    <Folder Include="failures\parachutes\" />
+    <Folder Include="failures\reactionwheels\" />
+    <Folder Include="failures\resources\" />
+    <Folder Include="failures\wheels\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
