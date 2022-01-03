@@ -7,7 +7,7 @@ using System.Text;
 
 namespace TestFlight
 {
-    public class LRTFFailure_LRAvionicsGlitch : LRTFFailureBase_Avionics
+    public class LRTFFailure_AvionicsGlitch : LRTFFailureBase_Avionics
     {
         [KSPField]
         public float maxDeadtime = 1f;
@@ -23,10 +23,10 @@ namespace TestFlight
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
-            if (node.HasNode("FAILEDAVIONICS"))
+            if (failed && node.HasNode("FAILEDAVIONICS"))
             {
                 this.currentInterval = float.Parse(node.GetNode("FAILEDAVIONICS").GetValue("currentInterval"));
-                this.state = bool.Parse(node.GetNode("FAILEDAVIONICS").GetValue("currentTime"));
+                this.state = bool.Parse(node.GetNode("FAILEDAVIONICS").GetValue("state"));
             }
         }
 

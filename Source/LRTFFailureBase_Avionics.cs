@@ -9,6 +9,9 @@ namespace TestFlight
 {
     public class LRTFFailureBase_Avionics : LRTFFailureBase
     {
+        [KSPField]
+        public bool includeAxisInPAW = true;
+
         public enum FailedState
         {
             Pitch = 0,
@@ -62,7 +65,6 @@ namespace TestFlight
 
         public override void DoFailure()
         {
-            base.DoFailure();
             if (base.vessel != null)
             {
                 System.Random ran = new System.Random();
@@ -74,9 +76,10 @@ namespace TestFlight
                 base.vessel.OnFlyByWire -= this.OnFlyByWire;
                 base.vessel.OnFlyByWire += this.OnFlyByWire;
 
-                pawMessage = failureTitle + " : " + failedState;
-                Fields["pawMessage"].guiActive = true;
+                if(includeAxisInPAW)
+                    pawMessage = failureTitle + " : " + failedState;
             }
+            base.DoFailure();
         }
         public override float DoRepair()
         {

@@ -7,7 +7,7 @@ using TestFlightAPI;
 
 namespace TestFlight
 {
-    public class TestFlightFailure_LRParachuteFail : LRTFFailureBase
+    public class LRTFFailure_ParachuteFail : LRTFFailureBase
     {
         private ModuleParachute chute;
 
@@ -16,18 +16,9 @@ namespace TestFlight
             base.OnStart(state);
             this.chute = base.part.FindModuleImplementing<ModuleParachute>();
         }
-        public override void OnStartFinished(StartState state)
-        {
-            base.OnStartFinished(state);
-            if (failed)
-                TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
-        }
 
         public override void DoFailure()
         {
-            pawMessage = failureTitle;
-            Fields["pawMessage"].guiActive = true;
-
             base.DoFailure();
             if (chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED)
             {

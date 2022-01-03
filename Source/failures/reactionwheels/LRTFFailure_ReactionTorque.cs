@@ -47,7 +47,6 @@ namespace TestFlight
             if (failed)
             {
                 loadFailure = true;
-                TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
             }
         }
 
@@ -93,8 +92,6 @@ namespace TestFlight
                         axis = ran.Next(0, 6); //yes axis are only 0 1 2, but this lowers chance for a 2nd axis failure
                     }
                 }
-                pawMessage = failureTitle;
-                Fields["pawMessage"].guiActive = true;
             }
         }
         public override float DoRepair()

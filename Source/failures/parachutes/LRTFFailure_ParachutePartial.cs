@@ -7,7 +7,7 @@ using TestFlightAPI;
 
 namespace TestFlight
 {
-    public class TestFlightFailure_LRParachuPartial : LRTFFailureBase
+    public class LRTFFailure_ParachuPartial : LRTFFailureBase
     {
         private ModuleParachute chute;
         private float deployAltitude;
@@ -17,18 +17,9 @@ namespace TestFlight
             base.OnStart(state);
             this.chute = base.part.FindModuleImplementing<ModuleParachute>();
         }
-        public override void OnStartFinished(StartState state)
-        {
-            base.OnStartFinished(state);
-            if (failed)
-                TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
-        }
-
+ 
         public override void DoFailure()
         {
-            pawMessage = failureTitle;
-            Fields["pawMessage"].guiActive = true;
-            
             deployAltitude = chute.deployAltitude;
             chute.deployAltitude = 0;
             chute.Fields["deployAltitude"].guiActive = false;
@@ -45,7 +36,8 @@ namespace TestFlight
             base.DoRepair();
             chute.deployAltitude = deployAltitude;
             chute.Fields["deployAltitude"].guiActive = true;
-            Fields["pawMessage"].guiActive = false;
+            if (chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED)
+                chute.AssumeDragCubePosition("DEPLOYED");
             return 0f;
         }
     }

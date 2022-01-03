@@ -11,15 +11,6 @@ namespace TestFlight
     {
         private bool state;
 
-        public override void OnStartFinished(StartState state)
-        {
-            base.OnStartFinished(state);
-            if (failed)
-            {
-                TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
-            }
-        }
-
         public override void DoFailure()
         {
             base.DoFailure();

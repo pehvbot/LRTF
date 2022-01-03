@@ -49,6 +49,9 @@
     <Reference Include="TestFlight">
       <HintPath>..\dlls_1_12_2\TestFlight.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>..\dlls_1_12_2\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -63,13 +66,8 @@
     <Compile Include="LRTFFailureBase_Avionics.cs" />
     <Compile Include="failures\avionics\LRTFFailure_AvionicsAxis.cs" />
     <Compile Include="failures\avionics\LRTFFailure_AvionicsThrustJam.cs" />
-    <Compile Include="failures\avionics\LRTFFailure_SASFailure.cs" />
     <Compile Include="failures\avionics\LRTFFailure_AvionicsTotal.cs" />
-    <Compile Include="failures\avionics\LRTFFailure_AvionicsPartial.cs" />
     <Compile Include="failures\avionics\LRTFFailure_AvionicsClamp.cs" />
-    <Compile Include="failures\avionics\LRTFFailure_AvionicsDeadzone.cs" />
-    <Compile Include="failures\avionics\LRTFFailure_AvionicsGlitch.cs" />
-    <Compile Include="failures\avionics\LRTFFailure_AvionicsInvert.cs" />
     <Compile Include="failures\resources\LRTFFailure_ResourceLeak.cs" />
     <Compile Include="failures\resources\LRTFFailure_ResourcePump.cs" />
     <Compile Include="failures\reactionwheels\LRTFFailure_ReactionBroken.cs" />
@@ -87,6 +85,11 @@
     <Compile Include="recorders\LRTFDataRecorder_Parachutes.cs" />
     <Compile Include="recorders\LRTFDataRecorder_Avionics.cs" />
     <Compile Include="recorders\LRTFDataRecorder_ReactionWheels.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsDeadzone.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsGlitch.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsInvert.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsPartial.cs" />
+    <Compile Include="failures\avionics\LRTFFailure_AvionicsSAS.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

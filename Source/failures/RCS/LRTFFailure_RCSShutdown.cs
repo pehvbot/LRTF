@@ -13,14 +13,6 @@ namespace TestFlight.Failure_Modules
         private bool stateEnabled;
         private bool statercsEnabled;
 
-        public override void OnStartFinished(StartState state)
-        {
-            base.OnStartFinished(state);
-            if(failed)
-            {
-                TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure("TestFlightFailure_LRRCSShutdown");
-            }
-        }
         public override void DoFailure()
         {   
             this.stateEnabled = base.rcs.enabled;
@@ -33,12 +25,9 @@ namespace TestFlight.Failure_Modules
             base.rcs.Events["ToggleToggles"].active = false;
             base.rcs.Events["ToggleToggles"].guiActive = false;
 
-            pawMessage = failureTitle;
-            Fields["pawMessage"].guiActive = true;
-
             base.DoFailure();
-
         }
+
         public override float DoRepair()
         {
             base.DoRepair();
@@ -47,8 +36,6 @@ namespace TestFlight.Failure_Modules
 
             base.rcs.Events["ToggleToggles"].active = !this.statercsEnabled;
             base.rcs.Events["ToggleToggles"].guiActive = !this.statercsEnabled;
-
-            Fields["pawMessage"].guiActive = false;
 
             return 0f;
         }

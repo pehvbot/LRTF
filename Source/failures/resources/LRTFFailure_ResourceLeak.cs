@@ -11,7 +11,7 @@ namespace TestFlight
     public class LRTFFailure_ResourceLeak : LRTFFailureBase
     {
         [KSPField]
-        public string resourceToLeak = "random";
+        public string resourceToLeak = "ANY";
         [KSPField]
         public string initialAmount = "10";
         [KSPField]
@@ -20,6 +20,8 @@ namespace TestFlight
         public bool calculatePerTick = false;
         [KSPField]
         public string resourceBlacklist = "";
+        [KSPField]
+        public bool includeResourceInPAW = true;
 
         [KSPField(isPersistant = true)]
         public bool isLeaking = false;
@@ -84,6 +86,10 @@ namespace TestFlight
         public override void OnSave(ConfigNode node)
         {
             base.OnSave(node);
+
+            if (node.HasNode("LEAK"))
+                node.RemoveNodes("LEAK");
+
             if (leaks.Count > 0)
             {
                 foreach (ResourceLeak leak in leaks)
@@ -96,24 +102,20 @@ namespace TestFlight
 
         public override void OnStartFinished(StartState state)
         {
-            base.OnStartFinished(state);
             if (isLeaking)
-            {
                 started = false;
-                TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
-            }
+            base.OnStartFinished(state);
         }
 
         public override void DoFailure()
         {
-            base.DoFailure();
 
             //get resource(s) to leak
             if (started)
             {
                 List<string> blacklist = this.resourceBlacklist.Split(',').ToList();
                 
-                if (resourceToLeak.ToLower() == "all")
+                if (resourceToLeak.ToUpper() == "ALL")
                 {
                     foreach (PartResource r in this.part.Resources)
                     {
@@ -122,8 +124,10 @@ namespace TestFlight
                         if(!blacklist.Contains(r.resourceName))
                             newLeaks.Add(new ResourceLeak(resID, _perSecondAmount, _initialAmount));
                     }
+                    if (includeResourceInPAW)
+                        pawMessage = failureTitle + " : All";
                 }
-                else if (resourceToLeak.ToLower() == "random")
+                else if (resourceToLeak.ToUpper() == "ANY")
                 {
 
                     if (part.Resources.Count > 0)
@@ -142,6 +146,8 @@ namespace TestFlight
                         int resID = allResources[randomResource].info.id;
                         ParseResourceValues(resID);
                         newLeaks.Add(new ResourceLeak(resID, _perSecondAmount, _initialAmount));
+                        if (includeResourceInPAW)
+                            pawMessage = failureTitle + " : " + allResources[randomResource].resourceName;
                     }
                 }
                 else if (this.part.Resources.Contains(resourceToLeak))
@@ -149,16 +155,18 @@ namespace TestFlight
                     int resID = this.part.Resources.Get(resourceToLeak).info.id;
                     ParseResourceValues(resID);
                     newLeaks.Add(new ResourceLeak(resID, _perSecondAmount, _initialAmount));
+                    if (includeResourceInPAW)
+                        pawMessage = failureTitle + " : " + resourceToLeak;
                 }
                 foreach (ResourceLeak newLeak in newLeaks)
                 {
-                    bool save = true;
-                    foreach (ResourceLeak leak in leaks)
-                    {
-                        if (leak.id == newLeak.id)
-                            save = false;
-                    }
-                    if (save)
+                    //bool save = true;
+                    //foreach (ResourceLeak leak in leaks)
+                    //{
+                    //    if (leak.id == newLeak.id)
+                    //        save = false;
+                    //}
+                    if (!leaks.Contains(newLeak))
                     {
                         leaks.Add(newLeak);
                     }
@@ -171,9 +179,9 @@ namespace TestFlight
                 started = true;
                 ParseResourceValues(leak.id);
                 this.part.RequestResource(leak.id, leak.initialAmount, ResourceFlowMode.NO_FLOW);
-                pawMessage = failureTitle;
-                Fields["pawMessage"].guiActive = true;
             }
+          
+            base.DoFailure();
         }
         public void FixedUpdate()
         {
@@ -188,8 +196,6 @@ namespace TestFlight
                         leak.amount = ParseValue(perSecondAmount, leak.id);
                     }
                     this.part.RequestResource(leak.id, _perSecondAmount * TimeWarp.fixedDeltaTime, ResourceFlowMode.NO_FLOW);
-                    pawMessage = failureTitle;
-                    Fields["pawMessage"].guiActive = true;
                 }
             }
         }
@@ -244,14 +250,11 @@ namespace TestFlight
 
         public override float DoRepair()
         {
+
             isLeaking = false;
-            leaks = new List<ResourceLeak>();
-
-            Fields["pawMessage"].guiActive = true;
-
+            leaks.RemoveRange(0, leaks.Count);
+            newLeaks.RemoveRange(0, newLeaks.Count);
             return base.DoRepair();
-
-
         }
     }
 }

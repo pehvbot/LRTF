@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TestFlight
 {
-    public class LRTFFailure_LRAvionicsPartial : LRTFFailureBase_Avionics
+    public class LRTFFailure_AvionicsPartial : LRTFFailureBase_Avionics
     {
         public override float Calculate(float value)
         {

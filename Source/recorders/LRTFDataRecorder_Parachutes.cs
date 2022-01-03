@@ -22,7 +22,7 @@ namespace TestFlight.Flight_Recorders
 
         public override bool IsPartOperating()
         {
-            if (!(isEnabled && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfParachutes) && TimeWarp.CurrentRate <= 4)
+            if (!(isEnabled || HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfParachutes) || TimeWarp.CurrentRate > 4)
                 return false;
 
             return (chute.deploymentState == ModuleParachute.deploymentStates.ACTIVE || chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED);

@@ -14,7 +14,9 @@ namespace TestFlight.Failure_Modules
         [KSPField]
         public string resourceBlacklist = "";
         [KSPField]
-        public bool drainResources = false;
+        public bool drainResource = false;
+        [KSPField]
+        public bool includeResourceInPAW = true;
 
         private List<string> pumps;
 
@@ -41,16 +43,19 @@ namespace TestFlight.Failure_Modules
         public override void OnSave(ConfigNode node)
         {
             base.OnSave(node);
-            foreach(string pump in pumps)
+
+            if(node.HasNode("FAILEDPUMPS"))
+                node.RemoveNode("FAILEDPUMPS");
+            ConfigNode n = node.AddNode("FAILEDPUMPS");
+
+            foreach (string pump in pumps)
             {
-                ConfigNode n = node.AddNode("FAILEDPUMPS");
                 n.AddValue("pump", pump);
             }
         }
 
         public override void OnStartFinished(StartState state)
         {
-            base.OnStartFinished(state);
             string oldResourceName = resourceName;
             started = false;
             foreach (string pump in pumps)
@@ -60,80 +65,83 @@ namespace TestFlight.Failure_Modules
             }
             started = true;
             resourceName = oldResourceName;
+
+            doTriggeredFailure = false;
+            base.OnStartFinished(state);
         }
 
         public override void DoFailure()
         {
-            base.DoFailure();
-            SetState(false);
-        }
-
-        public override float DoRepair()
-        {
-            base.DoRepair();
-            string oldResourceName = resourceName;
-            resourceName = "ALL";
-            SetState(true);
-            resourceName = oldResourceName;
-
-            Fields["pawMessage"].guiActive = false;
-            return 0f;
-        }
-
-        private void SetState(bool show)
-        {
             List<string> blacklist = this.resourceBlacklist.Split(',').ToList();
             List<PartResource> valid = null;
-            for (int i = 0; i < base.part.Resources.ToList().Count; i++)
+
+            foreach (PartResource checkResource in part.Resources)
             {
-                PartResource res = base.part.Resources.ToList()[i];
-                if (!blacklist.Contains(res.resourceName) && res.info.resourceFlowMode != ResourceFlowMode.NO_FLOW)
+                if (!blacklist.Contains(checkResource.resourceName))
                 {
-                    if (this.resourceName == "ALL" || res.resourceName == this.resourceName)
+                    if (this.resourceName.ToUpper() == "ALL" || checkResource.resourceName.ToUpper() == this.resourceName.ToUpper())
                     {
-                        res.flowState = show;
-                        res.hideFlow = !show;
+                        checkResource.flowState = false;
+                        checkResource.hideFlow = true;
 
-                        if (drainResources)
-                            res.amount = 0;
+                        if (drainResource)
+                            checkResource.amount = 0;
 
-                        pawMessage = res.resourceName + " " + failureTitle;
-                        Fields["pawMessage"].guiActive = !show;
-
-                        if (started)
-                            pumps.Add(res.resourceName);
-
-                        return;
+                        if (started && !pumps.Contains(checkResource.resourceName))
+                        {
+                            pumps.Add(checkResource.resourceName);
+                        }
                     }
-                    else if (this.resourceName == "ANY")
+                    else if (this.resourceName.ToUpper() == "ANY")
                     {
                         if (valid == null)
                         {
                             valid = new List<PartResource>();
                         }
-                        valid.Add(res);
+                        valid.Add(checkResource);
                     }
                 }
             }
-            if (this.resourceName == "ANY" && valid != null)
+
+            if (this.resourceName.ToUpper() == "ANY" && valid != null)
             {
                 System.Random ran = new System.Random();
                 int roll = ran.Next(0, valid.Count);
 
-                valid[roll].flowState = show;
-                valid[roll].hideFlow = !show;
+                valid[roll].flowState = false;
+                valid[roll].hideFlow = true;
 
-                if (drainResources)
+                if (drainResource)
                     valid[roll].amount = 0;
 
-                pawMessage = valid[roll].resourceName + " " + failureTitle;
-                Fields["pawMessage"].guiActive = !show;
+                if(includeResourceInPAW)
+                    pawMessage = failureTitle + " : " + valid[roll].resourceName;
 
-                if (started)
+                if (started && !pumps.Contains(valid[roll].resourceName))
                     pumps.Add(valid[roll].resourceName);
             }
-            MonoUtilities.RefreshPartContextWindow(part);
+
+            if (part.PartActionWindow != null)
+                part.PartActionWindow.displayDirty = true;
+
+            base.DoFailure();
+        }
+
+        public override float DoRepair()
+        {
+            base.DoRepair();
+
+            foreach (PartResource fixResource in part.Resources)
+            {
+                fixResource.flowState = true;
+                fixResource.hideFlow = false;
+            }
+            pumps = new List<string>();
+
+            if (part.PartActionWindow != null)
+                part.PartActionWindow.displayDirty = true;
+
+            return 0f;
         }
     }
-
 }

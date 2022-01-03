@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TestFlight
 {
-    public class LRTFFailure_LRAvionicsDeadzone : LRTFFailureBase_Avionics
+    public class LRTFFailure_AvionicsDeadzone : LRTFFailureBase_Avionics
     {
         private float deadStart;
         private float deadEnd;

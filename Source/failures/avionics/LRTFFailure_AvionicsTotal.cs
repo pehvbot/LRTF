@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TestFlight
 {
-    public class LRTFFailure_LRAvionicsTotal : LRTFFailureBase_Avionics
+    public class LRTFFailure_AvionicsTotal : LRTFFailureBase_Avionics
     {
         public override void OnFlyByWire(FlightCtrlState s)
         {

@@ -26,6 +26,12 @@ namespace TestFlight
         [GameParameters.CustomParameterUI("Send Message On Failure?", toolTip = "Send a message to Messages on failure.")]
         public bool lrtfSendMessage = false;
 
+        [GameParameters.CustomParameterUI("Enable Repairs?", toolTip = "Allows parts to be repaired.")]
+        public bool lrtfEnableRepair = false;
+
+        [GameParameters.CustomFloatParameterUI("Repair Adjuster", asPercentage = false, minValue = 1, maxValue = 5, stepCount = 4)]
+        public float lrtfRepairAdjuster = 3f;
+
         [GameParameters.CustomStringParameterUI("Failure Modes", autoPersistance = true, lines = 2, title = "\n<b>Failure Modes</b>", toolTip = "Enable or disable data recording and part failures")]
         public string UIstring = "";
 

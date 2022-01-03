@@ -7,19 +7,10 @@ using TestFlightAPI;
 
 namespace TestFlight
 {
-    public class LRTFFailure_LRAvionicsThrustJam : LRTFFailureBase_Avionics
+    public class LRTFFailure_AvionicsThrustJam : LRTFFailureBase_Avionics
     {
         [KSPField(isPersistant = true)]
         public float throttle;
-
-        public override void OnStartFinished(StartState state)
-        {
-            base.OnStartFinished(state);
-            if (failed)
-                TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
-            
-        }
-
 
         public override void DoFailure()
         {
