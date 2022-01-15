@@ -34,7 +34,7 @@ namespace TestFlight
         public override void DoFailure()
         {
             base.DoFailure();
-            if (!loadFailure)
+            if (hasStarted)
             {
                 Random ran = new Random();
                 float range = (float)ran.NextDouble() * 0.25f;

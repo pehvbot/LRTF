@@ -5,9 +5,9 @@ using System.Text;
 using UnityEngine;
 using TestFlightAPI;
 
-namespace TestFlight.Failure_Modules
+namespace TestFlight
 {
-    public class LRTFFailure_ResourcePump : LRTFFailureBase
+    public class LRTFFailure_ResourcePump : LRTFFailureBase_Resource
     {
         [KSPField]
         public string resourceName = "ANY";
@@ -16,11 +16,11 @@ namespace TestFlight.Failure_Modules
         [KSPField]
         public bool drainResource = false;
         [KSPField]
-        public bool includeResourceInPAW = true;
+        public bool includeResourceInPAW = false;
+        [KSPField]
+        public bool allowHiddenResources = false;
 
         private List<string> pumps;
-
-        private bool started = true;
 
         public override void OnAwake()
         {
@@ -54,83 +54,106 @@ namespace TestFlight.Failure_Modules
             }
         }
 
-        public override void OnStartFinished(StartState state)
+        public override void OnStart(StartState state)
         {
-            string oldResourceName = resourceName;
-            started = false;
-            foreach (string pump in pumps)
-            {
-                resourceName = pump;
-                TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
-            }
-            started = true;
-            resourceName = oldResourceName;
+            base.OnStart(state);
 
-            doTriggeredFailure = false;
-            base.OnStartFinished(state);
+            //look for any failable resources, disables if nothing is available
+            int count = 0;
+            List<string> blacklist = this.resourceBlacklist.Split(',').ToList();
+            if (resourceName == "" && blacklist.Count > 0)
+            {
+                foreach (PartResource candidate in this.part.Resources)
+                {
+                    if (!blacklist.Contains(candidate.resourceName))
+                        count++;
+                }
+                if (count == 0)
+                    core.DisableFailure(this.moduleName);
+            }
         }
 
         public override void DoFailure()
         {
             List<string> blacklist = this.resourceBlacklist.Split(',').ToList();
-            List<PartResource> valid = null;
+            List<PartResource> availableResources = new List<PartResource>();
+            List<PartResource> failedResources = new List<PartResource>();
 
-            foreach (PartResource checkResource in part.Resources)
+            foreach (PartResource candidate in this.part.Resources)
             {
-                if (!blacklist.Contains(checkResource.resourceName))
+                if (!blacklist.Contains(candidate.resourceName) && !pumps.Contains(candidate.resourceName) && (allowHiddenResources || candidate.isVisible))
+                    availableResources.Add(candidate);
+            }
+
+            if (hasStarted)
+            {
+                if (availableResources.Count > 0)
                 {
-                    if (this.resourceName.ToUpper() == "ALL" || checkResource.resourceName.ToUpper() == this.resourceName.ToUpper())
+                    if (resourceName.ToUpper() == "ANY")
                     {
-                        checkResource.flowState = false;
-                        checkResource.hideFlow = true;
-
-                        if (drainResource)
-                            checkResource.amount = 0;
-
-                        if (started && !pumps.Contains(checkResource.resourceName))
-                        {
-                            pumps.Add(checkResource.resourceName);
-                        }
+                        int randomResource = TestFlightUtil.GetCore(this.part, Configuration).RandomGenerator.Next(0, availableResources.Count);
+                        failedResources.Add(availableResources[randomResource]);
+                        pumps.Add(availableResources[randomResource].resourceName);
                     }
-                    else if (this.resourceName.ToUpper() == "ANY")
+                    else foreach (PartResource resource in availableResources)
                     {
-                        if (valid == null)
-                        {
-                            valid = new List<PartResource>();
-                        }
-                        valid.Add(checkResource);
+                            if (this.resourceName.ToUpper() == "ALL" || resource.resourceName.ToUpper() == this.resourceName.ToUpper())
+                            {
+                                failedResources.Add(resource);
+                                pumps.Add(resource.resourceName);
+                            }
                     }
                 }
             }
-
-            if (this.resourceName.ToUpper() == "ANY" && valid != null)
+            else
             {
-                System.Random ran = new System.Random();
-                int roll = ran.Next(0, valid.Count);
-
-                valid[roll].flowState = false;
-                valid[roll].hideFlow = true;
-
-                if (drainResource)
-                    valid[roll].amount = 0;
-
-                if(includeResourceInPAW)
-                    pawMessage = failureTitle + " : " + valid[roll].resourceName;
-
-                if (started && !pumps.Contains(valid[roll].resourceName))
-                    pumps.Add(valid[roll].resourceName);
+                foreach(PartResource resource in this.part.Resources)
+                {
+                    if (pumps.Contains(resource.resourceName))
+                        failedResources.Add(resource);
+                }
             }
 
+            foreach(var resource in failedResources)
+            {
+                resource.flowState = false;
+                resource.hideFlow = true;
+                string message = failureTitle;
+
+                if (drainResource)
+                    resource.amount = 0;
+
+                if (resourceTitles.HasValue(resource.resourceName))
+                    message = resourceTitles.GetValue(resource.resourceName);
+
+                if (includeResourceInPAW)
+                    pawMessage = message + " : " + resource.resourceName;
+            }
+            
             if (part.PartActionWindow != null)
                 part.PartActionWindow.displayDirty = true;
 
+            if (!hasStarted)
+                Failed = true;
+
             base.DoFailure();
+
+            //checks for partial failures
+            //checks there isn't a resourceToLeak and resources still available.
+            if (string.IsNullOrEmpty(resourceName) || resourceName.ToUpper() == "ANY")
+            {
+                foreach (PartResource candidate in availableResources)
+                    if (!failedResources.Contains(candidate))
+                    {
+                        partialFailed = true;
+                        Failed = false;
+                    }
+            }
         }
 
         public override float DoRepair()
         {
             base.DoRepair();
-
             foreach (PartResource fixResource in part.Resources)
             {
                 fixResource.flowState = true;

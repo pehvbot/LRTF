@@ -18,8 +18,7 @@ namespace TestFlight
             base.wheelSteering.steeringEnabled = false;
             base.wheelSteering.Actions["SteeringToggle"].active = false;
             base.wheelSteering.Fields["steeringEnabled"].guiActive = false;
-            pawMessage = failureTitle;
-            Fields["pawMessage"].guiActive = true;
+            base.DoFailure();
         }
         public override float DoRepair()
         {

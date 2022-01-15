@@ -26,17 +26,20 @@ namespace TestFlight
         [GameParameters.CustomParameterUI("Send Message On Failure?", toolTip = "Send a message to Messages on failure.")]
         public bool lrtfSendMessage = false;
 
+        [GameParameters.CustomParameterUI("Open PAW On Failure?", toolTip = "Opens the Part Action Window on failure.")]
+        public bool lrtfOpenPAW = false;
+
         [GameParameters.CustomParameterUI("Enable Repairs?", toolTip = "Allows parts to be repaired.")]
         public bool lrtfEnableRepair = false;
 
-        [GameParameters.CustomFloatParameterUI("Repair Adjuster", asPercentage = false, minValue = 1, maxValue = 5, stepCount = 4)]
+        [GameParameters.CustomFloatParameterUI("Repair Difficulty Adjuster", toolTip = "Adjusts the difficulty of repairs.  Higher is more difficult.", asPercentage = false, minValue = 1, maxValue = 5, stepCount = 4)]
         public float lrtfRepairAdjuster = 3f;
 
         [GameParameters.CustomStringParameterUI("Failure Modes", autoPersistance = true, lines = 2, title = "\n<b>Failure Modes</b>", toolTip = "Enable or disable data recording and part failures")]
         public string UIstring = "";
 
-        //[GameParameters.CustomParameterUI("Engines", toolTip = "Enables and disableds engine data recording and part failures")]
-        //public bool lrtfEngines = true;
+        [GameParameters.CustomParameterUI("Engines", toolTip = "Enables and disableds engine data recording and part failures")]
+        public bool lrtfEngines = true;
 
         [GameParameters.CustomParameterUI("Resources/Tanks", toolTip = "Enables and disableds resource and tank data recording and part failures")]
         public bool lrtfResources = true;
@@ -53,21 +56,34 @@ namespace TestFlight
         [GameParameters.CustomParameterUI("Parachutes", toolTip = "Enables and disableds parachutes data recording and part failures")]
         public bool lrtfParachutes = true;
 
+        [GameParameters.CustomParameterUI("Wheels", toolTip = "Enables and disableds wheel data recording and part failures")]
+        public bool lrtfWheels = true;
+
+        [GameParameters.CustomParameterUI("Aerodynamics", toolTip = "Enables and disableds aerodynamic data recording and part failures")]
+        public bool lrtfAerodynamics = true;
+
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
             switch (preset)
             {
                 case GameParameters.Preset.Easy:
                     lrtfAvionics = false;
-                    //lrtfEngines = false;
+                    lrtfEngines = false;
                     lrtfRCS = false;
                     lrtfReaction = false;
                     lrtfResources = false;
                     lrtfParachutes = false;
+                    lrtfWheels = false;
+                    lrtfAerodynamics = false;
+                    lrtfRepairAdjuster = 2;
                     break;
                 case GameParameters.Preset.Normal:
+                    break;
                 case GameParameters.Preset.Moderate:
+                    lrtfRepairAdjuster = 4;
+                    break;
                 case GameParameters.Preset.Hard:
+                    lrtfRepairAdjuster = 5;
                     break;
             }
         }

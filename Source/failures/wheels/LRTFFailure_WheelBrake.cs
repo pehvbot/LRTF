@@ -13,14 +13,12 @@ namespace TestFlight
 
         public override void DoFailure()
         {
-            base.DoFailure();
             this.breakTweakable = wheelBrakes.brakeTweakable;
             wheelBrakes.Actions["BrakeAction"].active = false;
             wheelBrakes.Fields["brakeTweakable"].guiActive = false;
             wheelBrakes.brakeTweakable = 0;
       
-            pawMessage = failureTitle;
-            Fields["pawMessage"].guiActive = true;
+            base.DoFailure();
         }
         public override float DoRepair()
         {
@@ -29,6 +27,7 @@ namespace TestFlight
             wheelBrakes.Fields["brakeTweakable"].guiActive = true;
             wheelBrakes.brakeTweakable = this.breakTweakable;
             return 0f;
+
         }
     }
 }

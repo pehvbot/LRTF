@@ -6,16 +6,21 @@ namespace TestFlight
 
     public class LRTFDataRecorder_Avionics : FlightDataRecorderBase
     {
+        private ModuleCommand command;
+
+        public override void OnStart(StartState state)
+        {
+            base.OnStart(state);
+            command = part.Modules.GetModule<ModuleCommand>();
+        }
         public override bool IsPartOperating()
         {
             if (!(isEnabled && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfAvionics))
                 return false;
 
-            PartModuleList mods = this.part.Modules;
-            ModuleCommand mod = (ModuleCommand)mods.GetModule("ModuleCommand");
             //hibernating or high warp protects the probe
-            if (!mod.IsHibernating && TimeWarp.CurrentRate <= 4)
-                if (mod.ModuleState == ModuleCommand.ModuleControlState.Nominal || mod.ModuleState == ModuleCommand.ModuleControlState.PartialProbe)
+            if (!command.IsHibernating && TimeWarp.CurrentRate <= 4)
+                if (command.ModuleState == ModuleCommand.ModuleControlState.Nominal || command.ModuleState == ModuleCommand.ModuleControlState.PartialProbe)
                     return true;
 
             return false;

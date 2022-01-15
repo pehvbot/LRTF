@@ -13,10 +13,10 @@ namespace TestFlight
 
         public override void DoFailure()
         {
-            base.DoFailure();
             this.state = base.module.wheelState;
             base.module.Events["OnToggle"].active = false;
             base.module.wheelState = ModuleReactionWheel.WheelState.Broken;
+            base.DoFailure();
         }
         public override float DoRepair()
         {

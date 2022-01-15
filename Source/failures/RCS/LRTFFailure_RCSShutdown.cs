@@ -6,7 +6,7 @@ using UnityEngine;
 using TestFlightCore;
 using TestFlightAPI;
 
-namespace TestFlight.Failure_Modules
+namespace TestFlight
 {
     public class LRTFFailure_RCSShutdown : LRTFFailureBase_RCS
     {

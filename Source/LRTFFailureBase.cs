@@ -14,6 +14,8 @@ namespace TestFlight
         public string pawMessage = "Failure";
 
         public bool doTriggeredFailure = true;
+        public bool partialFailed = false;
+        public bool hasStarted = false;
 
         protected ITestFlightCore core = null;
 
@@ -38,12 +40,13 @@ namespace TestFlight
         private double noEngineerOnEVAPenalty = 0.5;
 
 
-        public void OnEnable()
+        public override void OnAwake()
         {
             if (core == null)
                 core = TestFlightUtil.GetCore(this.part, Configuration);
+            base.OnAwake();
         }
-
+        
         public override void OnLoad(ConfigNode node)
         {
             pawMessage = failureTitle;
@@ -74,8 +77,9 @@ namespace TestFlight
                     }
                 }
             }
-
+           
             node.TryGetValue("previousRepairChance", ref previousRepairChance);
+            node.TryGetValue("partialFailed", ref partialFailed);
           
             base.OnLoad(node);
         }
@@ -83,32 +87,40 @@ namespace TestFlight
         public override void OnSave(ConfigNode node)
         {
             node.SetValue("previousRepairChance", previousRepairChance, true);
+            node.SetValue("partialFailed", partialFailed, true);
             base.OnSave(node);
         }
-
+        private void OnDestroy()
+        {
+            StopCoroutine(UpdatePAW());
+            base.OnInactive();
+        }
+        
         public override void OnStartFinished(StartState state)
         {
             base.OnStartFinished(state);
-            if (failed && doTriggeredFailure)
+            if ((failed || partialFailed) && doTriggeredFailure)
                 TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
+            hasStarted = true;
         }
 
         public override void DoFailure()
         {
-
             base.DoFailure();
 
             if (HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfLeaveTimeWarp)
                 TimeWarp.SetRate(0, true);
 
-            if (HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfSendMessage)
+            if (HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfSendMessage && hasStarted)
             {
                 var failTime = KSPUtil.PrintTimeCompact((int)Math.Floor(this.vessel.missionTime), false);
                 var failMessage = $"[{failTime}] {core.Title} has failed with {failureTitle}";
-               
                 MessageSystem.Message m = new MessageSystem.Message("TestFlight", failMessage, MessageSystemButton.MessageButtonColor.ORANGE, MessageSystemButton.ButtonIcons.ALERT);
                 MessageSystem.Instance.AddMessage(m);
             }
+
+            if (HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfOpenPAW && part.PartActionWindow == null && vessel.isActiveVessel)
+                UIPartActionController.Instance.SpawnPartActionWindow(part);
 
             BasePAWGroup group = new BasePAWGroup();
             group.displayName = "[" + this.failureType + "] " + pawMessage;
@@ -117,9 +129,9 @@ namespace TestFlight
             Fields["pawMessage"].group = group;
             Events["TryRepair"].group = group;
 
-            if (HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfEnableRepair)
+            if (HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfEnableRepair && CanAttemptRepair())
             {
-                Events["TryRepair"].guiName = "<b>Attempt Repair</b>: " + RepairChance() * 100 + "%";
+                Events["TryRepair"].guiName = $"<b>Attempt Repair</b>: {RepairChance():P}";
                 Events["TryRepair"].guiActive = true;
                 if (unfocusedRepair)
                 {
@@ -128,23 +140,21 @@ namespace TestFlight
                     Events["TryRepair"].unfocusedRange = evaRepairDistance;
                 }
                 StartCoroutine(UpdatePAW());
-
             }
             else
             {
                 Fields["pawMessage"].guiActive = true;
             }
-
-
         }
 
         private IEnumerator UpdatePAW()
         {
-            while(failed)
-            {            
-                if (RepairChance() > previousRepairChance)
+            while(failed || partialFailed)
+            {
+                double repairChance = RepairChance();
+                if (repairChance > previousRepairChance) 
                 {
-                    Events["TryRepair"].guiName = "<b>Attempt Repair</b>: " + RepairChance() * 100 + "%";
+                    Events["TryRepair"].guiName = $"<b>Attempt Repair</b>: {repairChance:P}";
                     Events["TryRepair"].guiActive = true;
                     if (unfocusedRepair)
                     {
@@ -159,7 +169,7 @@ namespace TestFlight
                     Events["TryRepair"].guiActive = false;
                     Events["TryRepair"].guiActiveUnfocused = false;
                     Events["TryRepair"].guiActiveUncommand = false;
-                    Fields["pawMessage"].guiName = "Last Repair Attempt: " + previousRepairChance * 100 + "%";
+                    Fields["pawMessage"].guiName = $"Last Repair Attempt: {previousRepairChance:P}";
                     Fields["pawMessage"].guiActive = true;
                 }
 
@@ -178,33 +188,14 @@ namespace TestFlight
             if (part.PartActionWindow != null)
                 part.PartActionWindow.displayDirty = true;
 
+            partialFailed = false;
+
             return base.DoRepair();
         }
 
         [KSPEvent(guiName = "Repair", active = true, guiActive = false, guiActiveEditor = false, guiActiveUnfocused = false)]
         public void TryRepair()
         {
-            bool consumedKit = false;
-
-            //remove repair kit if it exists on EVA
-            if (useRepairKit)
-            {
-                //Remove evaRepairKit if available
-                foreach (Vessel v in FlightGlobals.VesselsLoaded)
-                {
-                    //first checks for Kerbals in physics range
-                    if (v.isEVA && !consumedKit)
-                    {
-                        float kerbalDistanceToPart = Vector3.Distance(v.transform.position, part.collider.ClosestPointOnBounds(v.transform.position));
-                        if (kerbalDistanceToPart < evaRepairDistance && v.evaController.ModuleInventoryPartReference.ContainsPart("evaRepairKit"))
-                        {
-                            v.evaController.ModuleInventoryPartReference.RemoveNPartsFromInventory("evaRepairKit", 1);
-                            consumedKit = true;
-                        }
-                    }
-                }
-            }
-
             double currentRepairChance = RepairChance();
 
             if (currentRepairChance > core.RandomGenerator.NextDouble())
@@ -220,7 +211,43 @@ namespace TestFlight
                 previousRepairChance = currentRepairChance;
                 ScreenMessages.PostScreenMessage("<color=orange>Repairing the " + this.failureTitle + " on this part has failed!</color>\nYou can try again once you increase your understanding of this part or improve your repair capability", 7);
             }
-            if(consumedKit)
+
+            //remove repair kit if it exists on EVA
+
+            bool consumedKit = false;
+
+            if (useRepairKit)
+            {
+                //first try to remmove the evaRepairKit from active EVA kerbal 
+                Vessel a = FlightGlobals.ActiveVessel;
+                if(a.isEVA)
+                {
+                    float kerbalDistanceToPart = Vector3.Distance(a.transform.position, part.collider.ClosestPointOnBounds(a.transform.position));
+                    if (kerbalDistanceToPart < evaRepairDistance && a.evaController.ModuleInventoryPartReference.ContainsPart("evaRepairKit"))
+                    {
+                        a.evaController.ModuleInventoryPartReference.RemoveNPartsFromInventory("evaRepairKit", 1);
+                        consumedKit = true;
+                    }
+                }
+                //otherwise try taking from another EVA kerbal
+                if (!consumedKit)
+                {
+                    foreach (Vessel v in FlightGlobals.VesselsLoaded)
+                    {
+                        //first checks for Kerbals in physics range
+                        if (v.isEVA && !consumedKit)
+                        {
+                            float kerbalDistanceToPart = Vector3.Distance(v.transform.position, part.collider.ClosestPointOnBounds(v.transform.position));
+                            if (kerbalDistanceToPart < evaRepairDistance && v.evaController.ModuleInventoryPartReference.ContainsPart("evaRepairKit"))
+                            {
+                                v.evaController.ModuleInventoryPartReference.RemoveNPartsFromInventory("evaRepairKit", 1);
+                                consumedKit = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if (consumedKit)
                 ScreenMessages.PostScreenMessage("<color=orange>You have used up an EVA Repair Kit in your attempt.</color>", 7);
 
         }
@@ -239,10 +266,10 @@ namespace TestFlight
             double missionControlAdd = 0, engineerAdd = 0, crewAdd = 0, smartestAdd = 0, evaAdd = 0, repairKitAdd = 0;
 
             //mission control adjuster gives a min value of missionControlAdd for any connection
-            if (this.vessel.connection.CanComm)
+            if(this.vessel.connection != null && this.vessel.connection.IsConnected)
                 missionControlAdd = missionControlBonus * missionControlAdjuster
-                    + (1 - missionControlBonus) * missionControlAdjuster * ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.MissionControl); 
-
+                    + (1 - missionControlBonus) * missionControlAdjuster * ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.MissionControl);
+         
             //crew adjusters
             bool hasTrainedCrew = false;
             bool hasEVA = false;
@@ -262,39 +289,43 @@ namespace TestFlight
                     engineerLevel = Math.Max(engineerLevel, c.experienceLevel + crewLevelBonus);
                 highestLevel = Math.Max(highestLevel, c.experienceLevel + crewLevelBonus);
             }
+
             //EVA adjuster
-            foreach(var v in FlightGlobals.VesselsLoaded)
+            if (evaAdjuster > 0)
             {
-                //first checks for Kerbals in physics range
-                if(v.isEVA)
+                foreach (var v in FlightGlobals.VesselsLoaded)
                 {
-                    ProtoCrewMember member = v.GetVesselCrew()[0];
-                    float kerbalDistanceToPart = Vector3.Distance(v.transform.position, part.collider.ClosestPointOnBounds(v.transform.position));
-                    if(kerbalDistanceToPart < evaRepairDistance)
+                    //first checks for Kerbals in physics range
+                    if (v.isEVA)
                     {
-                        hasEVA = true;
-                        if (member.type == ProtoCrewMember.KerbalType.Crew)
-                            hasTrainedCrew = true;
-                        if (member.stupidity < stupidity)
-                            stupidity = member.stupidity;
-                        if (member.trait == "Engineer")
+                        ProtoCrewMember member = v.GetVesselCrew()[0];
+                        float kerbalDistanceToPart = Vector3.Distance(v.transform.position, part.collider.ClosestPointOnBounds(v.transform.position));
+                        if (kerbalDistanceToPart < evaRepairDistance)
                         {
-                            hasEngineerEVA = true;
-                            engineerLevel = Math.Max(engineerLevel, member.experienceLevel + crewLevelBonus);
+                            hasEVA = true;
+                            if (member.type == ProtoCrewMember.KerbalType.Crew)
+                                hasTrainedCrew = true;
+                            if (member.stupidity < stupidity)
+                                stupidity = member.stupidity;
+                            if (member.trait == "Engineer")
+                            {
+                                hasEngineerEVA = true;
+                                engineerLevel = Math.Max(engineerLevel, member.experienceLevel + crewLevelBonus);
+                            }
+                            highestLevel = Math.Max(highestLevel, member.experienceLevel + crewLevelBonus);
+                            if (repairKitAdjuster > 0 && v.evaController.ModuleInventoryPartReference.ContainsPart("evaRepairKit"))
+                                hasRepairKit = true;
                         }
-                        highestLevel = Math.Max(highestLevel, member.experienceLevel + crewLevelBonus);
-                        if (v.evaController.ModuleInventoryPartReference.ContainsPart("evaRepairKit"))
-                            hasRepairKit = true;
                     }
                 }
             }
 
-            if (!hasEVA)
-                evaAdd = 0;
-            else if (!hasEngineerEVA)
-                evaAdd = noEngineerOnEVAPenalty * evaAdjuster;
-            else
+            if (hasEVA)
+            {
                 evaAdd = evaAdjuster;
+                if (!hasEngineerEVA)
+                    evaAdd = evaAdjuster * noEngineerOnEVAPenalty;
+            }
 
             if (hasTrainedCrew)
             {
@@ -304,10 +335,10 @@ namespace TestFlight
             }
 
             if (hasRepairKit)
-                repairKitAdd = repairAdjuster;
-
-            if (hasEVA && hasRepairKit)
+            {
+                repairKitAdd = repairKitAdjuster;
                 useRepairKit = true;
+            }
 
             situationalAdjuster = missionControlAdd + engineerAdd + crewAdd + smartestAdd + evaAdd + repairKitAdd;
 

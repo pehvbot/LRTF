@@ -19,7 +19,6 @@ namespace TestFlight
 
         public override void DoFailure()
         {
-            base.DoFailure();
             if (chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED)
             {
                 chute.CutParachute();
@@ -29,6 +28,7 @@ namespace TestFlight
                 chute.deploymentState = ModuleParachute.deploymentStates.STOWED;
                 chute.enabled = false;
             }
+            base.DoFailure();
         }
 
         public override float DoRepair()

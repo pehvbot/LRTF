@@ -9,10 +9,11 @@ namespace TestFlight
     public class LRTFFailureBase_ReactionWheel : LRTFFailureBase
     {
         protected ModuleReactionWheel module;
-        public override void OnStart(PartModule.StartState state)
+
+        public override void OnStart(StartState state)
         {
             base.OnStart(state);
-            this.module = base.part.FindModuleImplementing<ModuleReactionWheel>();
+            module = base.part.FindModuleImplementing<ModuleReactionWheel>();
         }
     }
 }

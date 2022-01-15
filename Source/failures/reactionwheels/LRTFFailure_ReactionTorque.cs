@@ -16,7 +16,6 @@ namespace TestFlight
         private float failedRollTorque;
         private float failedYawTorque;
         private int working;
-        private bool loadFailure = false;
 
         public override void OnLoad(ConfigNode node)
         {
@@ -41,29 +40,13 @@ namespace TestFlight
             }
         }
 
-        public override void OnStartFinished(StartState state)
-        {
-            base.OnStartFinished(state);
-            if (failed)
-            {
-                loadFailure = true;
-            }
-        }
 
         public override void DoFailure()
         {
-            base.DoFailure();
-
             if (base.module != null)
             {
-                if (loadFailure)
-                {
-                    base.module.PitchTorque = failedPitchTorque;
-                    base.module.RollTorque = failedRollTorque;
-                    base.module.YawTorque = failedYawTorque;
-                    loadFailure = false;
-                }
-                else
+                if (hasStarted)
+
                 {
                     this.PitchTorque = base.module.PitchTorque;
                     this.RollTorque = base.module.RollTorque;
@@ -92,8 +75,16 @@ namespace TestFlight
                         axis = ran.Next(0, 6); //yes axis are only 0 1 2, but this lowers chance for a 2nd axis failure
                     }
                 }
+                else
+                {
+                    base.module.PitchTorque = failedPitchTorque;
+                    base.module.RollTorque = failedRollTorque;
+                    base.module.YawTorque = failedYawTorque;
+                }
+                base.DoFailure();
             }
         }
+
         public override float DoRepair()
         {
             base.DoRepair();

@@ -13,14 +13,12 @@ namespace TestFlight
 
         public override void DoFailure()
         {
-            base.DoFailure();
             this.state = base.wheelMotor.motorEnabled;
             wheelMotor.motorEnabled = false;
             wheelMotor.Actions["MotorEnable"].active = false;
             wheelMotor.Fields["motorEnabled"].guiActive = false;
              
-            pawMessage = failureTitle;
-            Fields["pawMessage"].guiActive = true;
+            base.DoFailure();
         }
         public override float DoRepair()
         {

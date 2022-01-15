@@ -23,15 +23,22 @@ namespace TestFlight
             TranZ = 6,
             Translate = 7
         }
-
+        
         [KSPField]
         public bool isFlyByWire = false;
 
         public FailedState failedState;
         public float failedValue;
 
-        public bool loadFailure = false;
+        private ModuleCommand moduleCommand;
 
+        private bool hasHibernation;
+
+        public override void OnAwake()
+        {
+            base.OnActive();
+            moduleCommand = part.FindModuleImplementing<ModuleCommand>();
+        }
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
@@ -53,41 +60,42 @@ namespace TestFlight
             }
         }
 
-        public override void OnStartFinished(StartState state)
-        {
-            base.OnStartFinished(state);
-            if (failed)
-            {
-                loadFailure = true;
-                TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
-            }
-        }
-
         public override void DoFailure()
         {
-            if (base.vessel != null)
-            {
-                System.Random ran = new System.Random();
-                if (!loadFailure)
-                {
-                    this.failedValue = 1f - (float)Math.Pow(ran.NextDouble(), 2);
-                    this.failedState = (FailedState)ran.Next(0, 8);
-                }
-                base.vessel.OnFlyByWire -= this.OnFlyByWire;
-                base.vessel.OnFlyByWire += this.OnFlyByWire;
+            if(core == null)
+                core = TestFlightUtil.GetCore(this.part, Configuration);
 
-                if(includeAxisInPAW)
-                    pawMessage = failureTitle + " : " + failedState;
+            System.Random ran = new System.Random();
+            if (hasStarted)
+            {
+                this.failedValue = 1f - (float)Math.Pow(ran.NextDouble(), 2);
+                this.failedState = (FailedState)ran.Next(0, 8);
             }
+            base.vessel.OnFlyByWire -= this.OnFlyByWire;
+            base.vessel.OnFlyByWire += this.OnFlyByWire;
+
+            if (includeAxisInPAW)
+                pawMessage = failureTitle + " : " + failedState;
+
+            hasHibernation = moduleCommand.hasHibernation;
+            moduleCommand.hasHibernation = true;
+            moduleCommand.Fields["hibernation"].guiActive = true;
+
             base.DoFailure();
         }
         public override float DoRepair()
         {
             base.DoRepair();
+
             if (base.vessel != null)
             {
                 base.vessel.OnFlyByWire -= this.OnFlyByWire;
             }
+
+            moduleCommand.hibernation = false; //turn off hibernation just in case button is hidden
+            moduleCommand.hasHibernation = hasHibernation;
+            moduleCommand.Fields["hibernation"].guiActive = hasHibernation;
+
             return 0f;
         }
         public virtual void OnFlyByWire(FlightCtrlState s)

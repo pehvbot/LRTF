@@ -8,7 +8,7 @@ using TestFlightAPI;
 
 namespace TestFlight
 {
-    public class LRTFFailure_ResourceLeak : LRTFFailureBase
+    public class LRTFFailure_ResourceLeak : LRTFFailureBase_Resource
     {
         [KSPField]
         public string resourceToLeak = "ANY";
@@ -21,15 +21,14 @@ namespace TestFlight
         [KSPField]
         public string resourceBlacklist = "";
         [KSPField]
-        public bool includeResourceInPAW = true;
+        public bool includeResourceInPAW = false;
+        [KSPField]
+        public bool allowHiddenResources = false;
 
         [KSPField(isPersistant = true)]
         public bool isLeaking = false;
-     
-        private List<ResourceLeak> leaks;
-        private List<ResourceLeak> newLeaks;
 
-        private bool started = true;
+        private List<ResourceLeak> leaks;
 
         private float _initialAmount, _perSecondAmount;
 
@@ -38,25 +37,29 @@ namespace TestFlight
             public int id = 0;
             public double amount;
             public double initialAmount;
+            public string resourceName;
 
             public void Load(ConfigNode node)
             {
                 id = int.Parse(node.GetValue("id"));
                 amount = double.Parse(node.GetValue("amount"));
                 initialAmount = 0d; // if we're loading, the initial leak has occurred.
+                resourceName = node.GetValue("resourceName");
             }
 
             public void Save(ConfigNode node)
             {
                 node.AddValue("id", id);
                 node.AddValue("amount", amount.ToString("G17"));
+                node.AddValue("resourceName", resourceName);
             }
 
-            public ResourceLeak(int newId, double newAmount, double newInit)
+            public ResourceLeak(int newId, double newAmount, double newInit, string newName)
             {
                 id = newId;
                 amount = newAmount;
                 initialAmount = newInit;
+                resourceName = newName;
             }
 
             public ResourceLeak(ConfigNode node)
@@ -69,26 +72,13 @@ namespace TestFlight
         {
             base.OnAwake();
             leaks = new List<ResourceLeak>();
-            newLeaks = new List<ResourceLeak>();
-        }
-
-        public override void OnLoad(ConfigNode node)
-        {
-            base.OnLoad(node);
-            if (node.HasNode("LEAK"))
-            {
-                leaks.Clear();
-                foreach (ConfigNode n in node.GetNodes("LEAK"))
-                    leaks.Add(new ResourceLeak(n));
-            }
         }
 
         public override void OnSave(ConfigNode node)
         {
             base.OnSave(node);
 
-            if (node.HasNode("LEAK"))
-                node.RemoveNodes("LEAK");
+            node.RemoveNodes("LEAK");
 
             if (leaks.Count > 0)
             {
@@ -100,89 +90,114 @@ namespace TestFlight
             }
         }
 
-        public override void OnStartFinished(StartState state)
+        public override void OnStart(StartState state)
         {
-            if (isLeaking)
-                started = false;
-            base.OnStartFinished(state);
+            base.OnStart(state);
+
+            //look for any failable resources, disables if nothing is available
+            int count = 0;
+            List<string> blacklist = this.resourceBlacklist.Split(',').ToList();
+            if (resourceToLeak == "" && blacklist.Count > 0)
+            {
+                foreach (PartResource candidate in this.part.Resources)
+                {
+                    if (!blacklist.Contains(candidate.resourceName))
+                        count++;
+                }
+                if (count == 0)
+                    core.DisableFailure(this.moduleName);
+            }
         }
 
         public override void DoFailure()
         {
+            List<string> blacklist = this.resourceBlacklist.Split(',').ToList();
+            List<PartResource> availableResources = new List<PartResource>();
 
-            //get resource(s) to leak
-            if (started)
+            foreach(PartResource candidate in this.part.Resources)
             {
-                List<string> blacklist = this.resourceBlacklist.Split(',').ToList();
-                
+                if (!blacklist.Contains(candidate.resourceName) && (allowHiddenResources || candidate.isVisible))
+                {
+                    bool available = true;
+                    foreach(ResourceLeak l in leaks)
+                    {
+                        if (l.resourceName == candidate.resourceName)
+                            available = false;
+                    }
+                    if (available)
+                        availableResources.Add(candidate);
+                }
+            }
+
+            if (hasStarted && availableResources.Count > 0)
+            {
                 if (resourceToLeak.ToUpper() == "ALL")
                 {
-                    foreach (PartResource r in this.part.Resources)
+                    foreach (PartResource r in availableResources)
                     {
                         int resID = r.info.id;
                         ParseResourceValues(resID);
-                        if(!blacklist.Contains(r.resourceName))
-                            newLeaks.Add(new ResourceLeak(resID, _perSecondAmount, _initialAmount));
+                        leaks.Add(new ResourceLeak(resID, _perSecondAmount, _initialAmount, r.resourceName));
                     }
                     if (includeResourceInPAW)
                         pawMessage = failureTitle + " : All";
                 }
                 else if (resourceToLeak.ToUpper() == "ANY")
                 {
-
-                    if (part.Resources.Count > 0)
-                    {
-                        List<PartResource> allResources = this.part.Resources.ToList();
-                        
-                        foreach(PartResource r in allResources)
-                        {
-                            foreach(string l in blacklist)
-                            {
-                                if (r.resourceName == l)
-                                    allResources.Remove(r);
-                            }
-                        }
-                        int randomResource = TestFlightUtil.GetCore(this.part, Configuration).RandomGenerator.Next(0, allResources.Count());
-                        int resID = allResources[randomResource].info.id;
-                        ParseResourceValues(resID);
-                        newLeaks.Add(new ResourceLeak(resID, _perSecondAmount, _initialAmount));
-                        if (includeResourceInPAW)
-                            pawMessage = failureTitle + " : " + allResources[randomResource].resourceName;
-                    }
+                    int randomResource = TestFlightUtil.GetCore(this.part, Configuration).RandomGenerator.Next(0, availableResources.Count);
+                    int resID = availableResources[randomResource].info.id;
+                    ParseResourceValues(resID);
+                    leaks.Add(new ResourceLeak(resID, _perSecondAmount, _initialAmount, availableResources[randomResource].resourceName));
                 }
                 else if (this.part.Resources.Contains(resourceToLeak))
                 {
                     int resID = this.part.Resources.Get(resourceToLeak).info.id;
                     ParseResourceValues(resID);
-                    newLeaks.Add(new ResourceLeak(resID, _perSecondAmount, _initialAmount));
-                    if (includeResourceInPAW)
-                        pawMessage = failureTitle + " : " + resourceToLeak;
-                }
-                foreach (ResourceLeak newLeak in newLeaks)
-                {
-                    //bool save = true;
-                    //foreach (ResourceLeak leak in leaks)
-                    //{
-                    //    if (leak.id == newLeak.id)
-                    //        save = false;
-                    //}
-                    if (!leaks.Contains(newLeak))
-                    {
-                        leaks.Add(newLeak);
-                    }
+                    leaks.Add(new ResourceLeak(resID, _perSecondAmount, _initialAmount, resourceToLeak));
+
                 }
             }
-
+         
             foreach (ResourceLeak leak in leaks)
             {
                 isLeaking = true;
-                started = true;
+                string message = failureTitle;
+
+                if (resourceTitles.HasValue(leak.resourceName))
+                    message = resourceTitles.GetValue(leak.resourceName);
+
                 ParseResourceValues(leak.id);
                 this.part.RequestResource(leak.id, leak.initialAmount, ResourceFlowMode.NO_FLOW);
+
+                pawMessage = message;
             }
-          
+
+            if (!hasStarted)
+                Failed = true;
+
             base.DoFailure();
+
+            //checks for partial failures
+            //checks there isn't a resourceToLeak and resources still available.
+            if (string.IsNullOrEmpty(resourceToLeak) || resourceToLeak.ToUpper() == "ANY")
+            {
+                foreach (PartResource candidate in availableResources)
+                {
+                    bool notThere = true;
+                    foreach (ResourceLeak leak in leaks)
+                    {
+                        if (leak.resourceName == candidate.resourceName)
+                            notThere = false;
+                    }
+                    if (notThere)
+                    {
+                        partialFailed = true;
+                        Failed = false;
+                    }
+                }
+            }
         }
+
         public void FixedUpdate()
         {
             if (HighLogic.LoadedSceneIsFlight && isLeaking)
@@ -250,10 +265,8 @@ namespace TestFlight
 
         public override float DoRepair()
         {
-
             isLeaking = false;
             leaks.RemoveRange(0, leaks.Count);
-            newLeaks.RemoveRange(0, newLeaks.Count);
             return base.DoRepair();
         }
     }

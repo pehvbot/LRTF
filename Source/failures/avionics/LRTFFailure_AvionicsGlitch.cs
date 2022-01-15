@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-//using UnityEngine;
+using UnityEngine;
 
 namespace TestFlight
 {
@@ -17,7 +16,6 @@ namespace TestFlight
         private float currentInterval = 0;
         private float currentTime = 0;
         private bool state = false;
-        private Random random;
 
 
         public override void OnLoad(ConfigNode node)
@@ -25,9 +23,9 @@ namespace TestFlight
             base.OnLoad(node);
             if (failed && node.HasNode("FAILEDAVIONICS"))
             {
-                this.currentInterval = float.Parse(node.GetNode("FAILEDAVIONICS").GetValue("currentInterval"));
-                this.state = bool.Parse(node.GetNode("FAILEDAVIONICS").GetValue("state"));
-            }
+                node.GetNode("FAILEDAVIONICS").TryGetValue("currentInterval", ref currentInterval);
+                node.GetNode("FAILEDAVIONICS").TryGetValue("state", ref state);
+             }
         }
 
         public override void OnSave(ConfigNode node)
@@ -41,20 +39,15 @@ namespace TestFlight
             }
         }
 
-
-        public override void DoFailure()
-        {
-            base.DoFailure();
-            this.random = new Random();
-        }
         public override float Calculate(float value)
         {
             this.currentTime = this.currentTime + UnityEngine.Time.deltaTime;
+
             if (this.currentTime > this.currentInterval)
             {
                 this.state = !this.state;
                 this.currentTime = 0;
-                this.currentInterval = (1 - (float)Math.Pow(this.random.NextDouble(), 2));
+                this.currentInterval = (1 - (float)Math.Pow(core.RandomGenerator.NextDouble(), 2));
                 if (this.state)
                 {
                     this.currentInterval = this.currentInterval * this.maxWorkTime;

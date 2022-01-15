@@ -14,13 +14,13 @@ namespace TestFlight
 
         public override void DoFailure()
         {
-            base.DoFailure();
             if (base.vessel != null && base.part != null && base.vessel.referenceTransformId == base.part.flightID)
             {
                 base.vessel.OnFlyByWire -= this.OnFlyByWire;
                 base.vessel.OnFlyByWire += this.OnFlyByWire;
                 this.throttle = base.vessel.ctrlState.mainThrottle;
             }
+            base.DoFailure();
         }
         public override float DoRepair()
         {

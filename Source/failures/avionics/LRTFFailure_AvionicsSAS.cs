@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using TestFlightAPI;
+﻿using UnityEngine;
 using System.Collections;
 
 namespace TestFlight
@@ -11,7 +6,6 @@ namespace TestFlight
     public class LRTFFailure_AvionicsSAS : LRTFFailureBase
     {
         private ModuleSAS sas;
-        int ticker = 0;
 
         public override void OnStart(PartModule.StartState state)
         {
