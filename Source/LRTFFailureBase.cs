@@ -256,7 +256,9 @@ namespace TestFlight
         {
             //Gets base repair chance which gets adjusted downwards depending on situation.
             float repairAdjuster = HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfRepairAdjuster - 1;
+
             double repairChance = core.FailureRateToMTBF(core.GetBaseReliabilityCurve().Evaluate(0), TestFlightUtil.MTBFUnits.SECONDS) * core.GetBaseFailureRate();
+          
             repairChance = 1 - (repairAdjuster * 10 + 1) * repairChance / (repairAdjuster * 10 * repairChance + 1);
 
             //get situational adjusters

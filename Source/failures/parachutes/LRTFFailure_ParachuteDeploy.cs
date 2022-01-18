@@ -74,6 +74,7 @@ namespace TestFlight
             base.DoRepair();
             chute.enabled = true;
             parachuteActive = false;
+            deploymentChanceString = $"{deploymentChance:P}";
             return 0f;
         }
     }
