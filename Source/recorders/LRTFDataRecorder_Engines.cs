@@ -6,7 +6,7 @@ using TestFlightAPI;
 
 namespace TestFlight
 {
-    public class LRTFDataRecorder_Engine : FlightDataRecorderBase
+    public class LRTFDataRecorder_Engine : LRTFDataRecorderBase
     {
         private EngineModuleWrapper engine;
 

@@ -30,7 +30,7 @@ namespace TestFlight
                 if (node.HasNode("deploymentChanceCurve"))
                     deploymentChanceCurve.Load(node.GetNode("deploymentChanceCurve"));
                 else
-                    deploymentChanceCurve.Add(0f, 0.5f);
+                    deploymentChanceCurve.Add(0f, 1f);
             }
             
             base.OnLoad(node);

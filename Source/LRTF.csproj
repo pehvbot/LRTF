@@ -107,9 +107,16 @@
     <Compile Include="LRTFFailureBase_Resource.cs" />
     <Compile Include="failures\wheels\LRTFFailure_WheelBrake.cs" />
     <Compile Include="recorders\LRTFDataRecorder_Engines.cs" />
+    <Compile Include="LRTFDataRecorderBase.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_Communications.cs" />
+    <Compile Include="failures\communications\LRTFFailure_CommFailure.cs" />
+    <Compile Include="LRTFFailureBase_Communications.cs" />
+    <Compile Include="failures\communications\LRTFFailure_CommDeploy.cs" />
+    <Compile Include="failures\communications\LRTFFailure_CommPartial.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="failures\aerodynamics\" />
+    <Folder Include="failures\communications\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

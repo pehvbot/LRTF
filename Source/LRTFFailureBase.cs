@@ -13,6 +13,10 @@ namespace TestFlight
         [KSPField(guiActive = false, guiName = "<b>TYPE</b>", guiActiveEditor = false, guiActiveUnfocused = true)]
         public string pawMessage = "Failure";
 
+        [KSPField]
+        public bool forceRepair = false;
+
+        public bool allowRepair = true;
         public bool doTriggeredFailure = true;
         public bool partialFailed = false;
         public bool hasStarted = false;
@@ -38,7 +42,6 @@ namespace TestFlight
         private int crewLevelBonus = 5;
         private double missionControlBonus = 0.3;
         private double noEngineerOnEVAPenalty = 0.5;
-
 
         public override void OnAwake()
         {
@@ -80,7 +83,9 @@ namespace TestFlight
            
             node.TryGetValue("previousRepairChance", ref previousRepairChance);
             node.TryGetValue("partialFailed", ref partialFailed);
-          
+
+            node.TryGetValue("forceRepair", ref forceRepair);
+
             base.OnLoad(node);
         }
 
@@ -198,7 +203,7 @@ namespace TestFlight
         {
             double currentRepairChance = RepairChance();
 
-            if (currentRepairChance > core.RandomGenerator.NextDouble())
+            if (currentRepairChance > core.RandomGenerator.NextDouble() || forceRepair)
             {
 
                 ScreenMessages.PostScreenMessage("The " + this.failureTitle + " on this part has been repaired!", 7);

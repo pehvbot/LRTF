@@ -6,7 +6,7 @@ namespace TestFlight
 {
 
   
-    public class LRTFDataRecorder_RCS : FlightDataRecorderBase
+    public class LRTFDataRecorder_RCS : LRTFDataRecorderBase
     {
         private ModuleRCS rcs;
 

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace TestFlight.Flight_Recorders
 {
-    public class LRTFDataRecorder_Parachutes : FlightDataRecorderBase
+    public class LRTFDataRecorder_Parachutes : LRTFDataRecorderBase
     {
         ModuleParachute chute;
         public override void OnStart(PartModule.StartState state)

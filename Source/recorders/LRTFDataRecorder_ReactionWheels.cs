@@ -6,7 +6,7 @@ using TestFlightAPI;
 
 namespace TestFlight.Flight_Recorders
 {
-    public class LRTFDataRecorder_ReactionWheel : FlightDataRecorderBase
+    public class LRTFDataRecorder_ReactionWheel : LRTFDataRecorderBase
     {
         private ModuleReactionWheel module;
 

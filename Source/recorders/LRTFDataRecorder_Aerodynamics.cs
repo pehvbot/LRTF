@@ -6,7 +6,7 @@ namespace TestFlight
 {
 
 
-    public class LRTFDataRecorder_Aerodynamics : FlightDataRecorderBase
+    public class LRTFDataRecorder_Aerodynamics : LRTFDataRecorderBase
     {
 
         [KSPField]

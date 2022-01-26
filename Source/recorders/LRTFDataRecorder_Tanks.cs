@@ -7,7 +7,7 @@ using TestFlightAPI;
 
 namespace TestFlight
 {
-    public class LRTFDataRecorder_Tanks : FlightDataRecorderBase
+    public class LRTFDataRecorder_Tanks : LRTFDataRecorderBase
     {
         [KSPField]
         public double emptyThreshold = 0.1;

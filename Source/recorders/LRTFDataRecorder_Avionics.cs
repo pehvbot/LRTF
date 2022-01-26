@@ -4,7 +4,7 @@ using UnityEngine;
 namespace TestFlight
 {
 
-    public class LRTFDataRecorder_Avionics : FlightDataRecorderBase
+    public class LRTFDataRecorder_Avionics : LRTFDataRecorderBase
     {
         private ModuleCommand command;
 

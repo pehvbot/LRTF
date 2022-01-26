@@ -21,16 +21,16 @@ namespace TestFlight
         public override bool HasPresets { get { return true; } }
 
         [GameParameters.CustomParameterUI("Leave TimeWarp On Failure?", toolTip = "Set to leave TimeWarp on failure.")]
-        public bool lrtfLeaveTimeWarp = false;
+        public bool lrtfLeaveTimeWarp = true;
 
         [GameParameters.CustomParameterUI("Send Message On Failure?", toolTip = "Send a message to Messages on failure.")]
-        public bool lrtfSendMessage = false;
+        public bool lrtfSendMessage = true;
 
         [GameParameters.CustomParameterUI("Open PAW On Failure?", toolTip = "Opens the Part Action Window on failure.")]
-        public bool lrtfOpenPAW = false;
+        public bool lrtfOpenPAW = true;
 
         [GameParameters.CustomParameterUI("Enable Repairs?", toolTip = "Allows parts to be repaired.")]
-        public bool lrtfEnableRepair = false;
+        public bool lrtfEnableRepair = true;
 
         [GameParameters.CustomFloatParameterUI("Repair Difficulty Adjuster", toolTip = "Adjusts the difficulty of repairs.  Higher is more difficult.", asPercentage = false, minValue = 1, maxValue = 5, stepCount = 4)]
         public float lrtfRepairAdjuster = 3f;
@@ -62,6 +62,9 @@ namespace TestFlight
         [GameParameters.CustomParameterUI("Aerodynamics", toolTip = "Enables and disableds aerodynamic data recording and part failures")]
         public bool lrtfAerodynamics = true;
 
+        [GameParameters.CustomParameterUI("Communications", toolTip = "Enables and disableds communication/antenna data recording and part failures")]
+        public bool lrtfCommunications = true;
+
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
             switch (preset)
@@ -75,6 +78,7 @@ namespace TestFlight
                     lrtfParachutes = false;
                     lrtfWheels = false;
                     lrtfAerodynamics = false;
+                    lrtfCommunications = false;
                     lrtfRepairAdjuster = 2;
                     break;
                 case GameParameters.Preset.Normal:

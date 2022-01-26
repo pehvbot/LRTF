@@ -7,7 +7,7 @@ using ModuleWheels;
 
 namespace TestFlight.Flight_Recorders
 {
-    public class LRTFDataRecorder_Wheels : FlightDataRecorderBase
+    public class LRTFDataRecorder_Wheels : LRTFDataRecorderBase
     {
         private ModuleWheelSteering wheelSteering;
         private ModuleWheelBrakes wheelBrakes;
