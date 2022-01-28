@@ -10,14 +10,18 @@ namespace TestFlight
 {
     public class LRTFFailure_RCSShutdown : LRTFFailureBase_RCS
     {
+        private float previousThrustPower;
+
         private bool stateEnabled;
         private bool statercsEnabled;
 
         public override void DoFailure()
         {   
-            this.stateEnabled = base.rcs.enabled;
-            this.statercsEnabled = base.rcs.rcsEnabled;
-           
+            stateEnabled = base.rcs.enabled;
+            statercsEnabled = base.rcs.rcsEnabled;
+            previousThrustPower = base.rcs.thrusterPower;
+
+            base.rcs.thrusterPower = 0;
             base.rcs.enabled = false;
             base.rcs.rcsEnabled = false;
             base.rcs.DeactivateFX();
@@ -31,11 +35,12 @@ namespace TestFlight
         public override float DoRepair()
         {
             base.DoRepair();
-            base.rcs.enabled = this.stateEnabled;
-            base.rcs.rcsEnabled = this.statercsEnabled;
+            base.rcs.thrusterPower = previousThrustPower;
+            base.rcs.enabled = stateEnabled;
+            base.rcs.rcsEnabled = statercsEnabled;
 
-            base.rcs.Events["ToggleToggles"].active = !this.statercsEnabled;
-            base.rcs.Events["ToggleToggles"].guiActive = !this.statercsEnabled;
+            base.rcs.Events["ToggleToggles"].active = !statercsEnabled;
+            base.rcs.Events["ToggleToggles"].guiActive = !statercsEnabled;
 
             return 0f;
         }

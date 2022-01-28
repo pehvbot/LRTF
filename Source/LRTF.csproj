@@ -60,7 +60,6 @@
     <Compile Include="LRTFFailureBase_Wheel.cs" />
     <Compile Include="LRTFFailureBase_Generic.cs" />
     <Compile Include="LRTFFailureBase.cs" />
-    <Compile Include="LRTFReliability_TestRepair.cs" />
     <Compile Include="LRTFFailureBase_ReactionWheel.cs" />
     <Compile Include="LRTFGameSettings.cs" />
     <Compile Include="LRTFFailureBase_RCS.cs" />
@@ -113,10 +112,18 @@
     <Compile Include="LRTFFailureBase_Communications.cs" />
     <Compile Include="failures\communications\LRTFFailure_CommDeploy.cs" />
     <Compile Include="failures\communications\LRTFFailure_CommPartial.cs" />
+    <Compile Include="failures\decouplers\LRTFFailure_DecouplerForce.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_Decoupler.cs" />
+    <Compile Include="modules\LRTFModuleDecouple.cs" />
+    <Compile Include="failures\decouplers\LRTFFailure_DecouplerFailure.cs" />
+    <Compile Include="failures\decouplers\LRTFFailure_DecouplerDeploy.cs" />
+    <Compile Include="LRTFFailureBase_Decouple.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="failures\aerodynamics\" />
     <Folder Include="failures\communications\" />
+    <Folder Include="failures\decouplers\" />
+    <Folder Include="modules\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

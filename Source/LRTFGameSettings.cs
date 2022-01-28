@@ -65,6 +65,9 @@ namespace TestFlight
         [GameParameters.CustomParameterUI("Communications", toolTip = "Enables and disableds communication/antenna data recording and part failures")]
         public bool lrtfCommunications = true;
 
+        [GameParameters.CustomParameterUI("Decouplers", toolTip = "Enables and disableds decoupler data recording and part failures")]
+        public bool lrtfDecouplers = true;
+
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
             switch (preset)
@@ -79,6 +82,7 @@ namespace TestFlight
                     lrtfWheels = false;
                     lrtfAerodynamics = false;
                     lrtfCommunications = false;
+                    lrtfDecouplers = false;
                     lrtfRepairAdjuster = 2;
                     break;
                 case GameParameters.Preset.Normal:

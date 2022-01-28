@@ -84,5 +84,11 @@ namespace TestFlightAPI
             base.OnUpdate();
 
         }
+        public override bool IsRecordingFlightData()
+        {
+            if(vessel.isActiveVessel)
+                return base.IsRecordingFlightData();
+            return false;
+        }
     }
 }
