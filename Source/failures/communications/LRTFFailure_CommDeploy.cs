@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using TestFlightAPI;
+﻿using TestFlightAPI;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFFailure_CommDeploy : LRTFFailureBase_Communications
     {

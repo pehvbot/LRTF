@@ -1,12 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 
 using UnityEngine;
 
-using TestFlightAPI;
-
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFFailure_IgnitionFail : LRTFFailureBase_Engine
     {

@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFFailure_AvionicsSAS : LRTFFailureBase
     {

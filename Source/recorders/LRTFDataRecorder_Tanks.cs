@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 using TestFlightAPI;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFDataRecorder_Tanks : LRTFDataRecorderBase
     {
@@ -14,29 +13,34 @@ namespace TestFlight
         [KSPField]
         public string resourceNames = "ANY";
 
+        private string[] needsResources;
 
         private int ticker = 1;
         private bool isRecording;
         private Dictionary<string, double> resourceAmounts = new Dictionary<string, double>();
+        private List<PartResource> partResources;
 
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
         }
+        public override void OnStart(StartState state)
+        {
+            //strip spaces
+            resourceNames = String.Concat(resourceNames.Where(c => !Char.IsWhiteSpace(c))).ToUpper();
+            if (resourceNames == "") resourceNames = "ANY";
+                needsResources = resourceNames.Split(',');
 
+            partResources = this.part.Resources.ToList();
+
+            base.OnStart(state);
+        }
         public override bool IsPartOperating()
         {
             if (!(isEnabled && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfResources))
                 return false;
 
-            //strip spaces
-            resourceNames = String.Concat(resourceNames.Where(c => !Char.IsWhiteSpace(c))).ToUpper();
-            if (resourceNames == "") resourceNames = "ANY";
-            string[] needsResources = resourceNames.Split(',');
-
             bool willRecord = false;
-
-            List<PartResource> partResources = this.part.Resources.ToList();
 
             //spamming PartResource.amout causes incoherence with the data.
             //checks every 50 cycles. stores the last known state to
@@ -67,7 +71,6 @@ namespace TestFlight
                 else
                     isRecording = false;
             }
-            
             return isRecording;
         }
 

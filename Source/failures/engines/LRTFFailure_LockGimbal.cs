@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-using UnityEngine;
-using TestFlightAPI;
-
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFFailure_LockGimbal : LRTFFailureBase
     {

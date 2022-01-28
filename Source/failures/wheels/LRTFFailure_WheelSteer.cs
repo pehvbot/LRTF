@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TestFlightAPI;
-using UnityEngine;
-
-namespace TestFlight
+﻿namespace TestFlight.LRTF
 {
     public class LRTFFailure_WheelSteer : LRTFFailureBase_Wheel
     {

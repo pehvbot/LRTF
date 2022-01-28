@@ -1,9 +1,7 @@
 ﻿using TestFlightAPI;
-using UnityEngine;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
-
     public class LRTFDataRecorder_Avionics : LRTFDataRecorderBase
     {
         private ModuleCommand command;
@@ -15,13 +13,9 @@ namespace TestFlight
         }
         public override bool IsPartOperating()
         {
-            if (!(isEnabled && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfAvionics))
-                return false;
-
             //hibernating or high warp protects the probe
-            if (!command.IsHibernating && TimeWarp.CurrentRate <= 4)
-                if (command.ModuleState == ModuleCommand.ModuleControlState.Nominal || command.ModuleState == ModuleCommand.ModuleControlState.PartialProbe)
-                    return true;
+            if (isEnabled && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfAvionics && !command.IsHibernating && TimeWarp.CurrentRate <= 4)
+                return command.ModuleState == ModuleCommand.ModuleControlState.Nominal || command.ModuleState == ModuleCommand.ModuleControlState.PartialProbe;
 
             return false;
         }

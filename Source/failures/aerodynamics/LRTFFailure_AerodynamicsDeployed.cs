@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFFailure_AerodynamicsDeployed : LRTFFailureBase_Aerodynamics
     {

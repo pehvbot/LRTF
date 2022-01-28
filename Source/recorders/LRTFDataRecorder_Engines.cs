@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using TestFlightAPI;
 
-using TestFlightAPI;
-
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFDataRecorder_Engine : LRTFDataRecorderBase
     {
@@ -19,7 +15,7 @@ namespace TestFlight
 
         public override bool IsPartOperating()
         {
-            if (vessel.situation == Vessel.Situations.PRELAUNCH || !isEnabled || !HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfEngines || TimeWarp.CurrentRate > 4)
+            if (!isEnabled || !HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfEngines || TimeWarp.CurrentRate > 4)
                 return false;
 
             return engine.IgnitionState == EngineModuleWrapper.EngineIgnitionState.IGNITED;
@@ -27,6 +23,8 @@ namespace TestFlight
 
         public override bool IsRecordingFlightData()
         {
+            if (vessel.situation == Vessel.Situations.PRELAUNCH)
+                return false;
             return IsPartOperating();
         }
     }

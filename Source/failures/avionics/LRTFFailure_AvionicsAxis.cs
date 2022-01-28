@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TestFlightAPI;
-
-namespace TestFlight
+﻿namespace TestFlight.LRTF
 { 
     public class LRTFFailure_AvionicsAxis : LRTFFailureBase_Avionics
     {

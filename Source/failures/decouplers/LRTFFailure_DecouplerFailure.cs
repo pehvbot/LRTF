@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using TestFlightAPI;
+﻿using TestFlightAPI;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFFailure_DecouplerFailure : LRTFFailureBase_Decoupler
     {

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFFailure_GimbalSpeed : LRTFFailureBase_Gimbal
     {

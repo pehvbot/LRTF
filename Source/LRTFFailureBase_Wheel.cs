@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TestFlightAPI;
-using ModuleWheels;
+﻿using ModuleWheels;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFFailureBase_Wheel : LRTFFailureBase
     {

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using TestFlightAPI;
 using KSP.UI.Screens;
 using UnityEngine;
 using System.Collections;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
 
     public class LRTFFailureBase : TestFlightFailureBase

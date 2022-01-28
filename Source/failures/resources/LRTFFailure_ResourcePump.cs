@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using UnityEngine;
+
 using TestFlightAPI;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFFailure_ResourcePump : LRTFFailureBase_Resource
     {

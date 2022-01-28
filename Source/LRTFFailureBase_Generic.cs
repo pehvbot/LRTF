@@ -6,7 +6,7 @@ using System.Reflection;
 
 using TestFlightAPI;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFFailureBase_Generic : LRTFFailureBase
     {

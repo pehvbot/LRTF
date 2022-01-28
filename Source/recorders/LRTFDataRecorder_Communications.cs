@@ -1,9 +1,7 @@
 ﻿using TestFlightAPI;
-using UnityEngine;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
-
     public class LRTFDataRecorder_Communications : LRTFDataRecorderBase
     {
         private ModuleDataTransmitter transmitter;

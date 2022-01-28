@@ -5,7 +5,7 @@ using System.Text;
 using TestFlightAPI;
 using ModuleWheels;
 
-namespace TestFlight.Flight_Recorders
+namespace TestFlight.LRTF
 {
     public class LRTFDataRecorder_Wheels : LRTFDataRecorderBase
     {
@@ -27,29 +27,18 @@ namespace TestFlight.Flight_Recorders
         }
         public override bool IsPartOperating()
         {
-            bool isGrounded = wheel.isGrounded;
-
-            if (!isGrounded)
-            {
+            if (!wheel.isGrounded)
                 return false;
-            }
 
             if ((float)base.vessel.horizontalSrfSpeed > 0f)
             {
                 if (this.wheelSteering.steeringEnabled && Math.Abs(this.wheelSteering.steeringInput) > 0f)
-                {
                     return true;
-                }
                 if (this.wheelBrakes.brakeInput < 0f)
-                {
                     return true;
-                }
                 if (wheelMotor.motorEnabled && Math.Abs(wheelMotor.driveOutput) > 0f)
-                {
                     return true;
-                }
             }
-
             return false;
         }
     }

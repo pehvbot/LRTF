@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TestFlightAPI;
-using KSP;
+﻿using System.Collections.Generic;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFFailureBase_Gimbal : LRTFFailureBase
     {

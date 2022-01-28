@@ -1,11 +1,8 @@
 ﻿using TestFlightAPI;
 using System.Linq;
-using UnityEngine;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
-
-  
     public class LRTFDataRecorder_RCS : LRTFDataRecorderBase
     {
         private ModuleRCS rcs;

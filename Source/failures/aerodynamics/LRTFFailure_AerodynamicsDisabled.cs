@@ -1,7 +1,4 @@
-﻿using System;
-using UnityEngine;
-
-namespace TestFlight
+﻿namespace TestFlight.LRTF
 {
     public class LRTFFailure_AerodynamicsDisabled : LRTFFailureBase_Aerodynamics
     {

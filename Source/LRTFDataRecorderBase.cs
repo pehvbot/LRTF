@@ -1,7 +1,4 @@
-﻿using System;
-using TestFlightCore;
-using TestFlightAPI;
-using UnityEngine;
+﻿using TestFlightCore;
 
 namespace TestFlightAPI
 {
@@ -54,10 +51,8 @@ namespace TestFlightAPI
                 paramsNode = n;
 
             if (paramsNode == null)
-            {
-                Debug.LogError("[LRTF] Could not find LRTFSETTINGS node.");
                 return;
-            }
+
             paramsNode.TryGetValue("additionalDataRecordersMax", ref additionalDataRecordersMax);
         }
 

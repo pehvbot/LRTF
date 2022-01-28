@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace TestFlight
+﻿namespace TestFlight.LRTF
 {
     public class LRTFFailure_AvionicsTotal : LRTFFailureBase_Avionics
     {

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
 
-using TestFlightAPI;
-
-namespace TestFlight
+namespace TestFlight.LRTF
 {
     public class LRTFFailureBase_Engine : LRTFFailureBase
     {

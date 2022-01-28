@@ -1,6 +1,6 @@
 ﻿using TestFlightAPI;
 
-namespace TestFlight
+namespace TestFlight.LRTF
 {
 
     public class LRTFFailureBase_RCS : LRTFFailureBase
