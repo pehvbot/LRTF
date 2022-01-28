@@ -14,7 +14,7 @@ namespace TestFlight
         public override bool IsPartOperating()
         {
             if (isEnabled && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfDecouplers
-                && this.part.vessel.situation == Vessel.Situations.PRELAUNCH && TimeWarp.CurrentRate <= 4)
+                && this.part.vessel.situation != Vessel.Situations.PRELAUNCH && TimeWarp.CurrentRate <= 4)
                 return true;
             return false;
         }
