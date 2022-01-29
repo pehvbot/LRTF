@@ -8,6 +8,9 @@ namespace TestFlight.LRTF
         [KSPField]
         public bool includeAxisInPAW = true;
 
+        [KSPField]
+        public bool includeTranslate = false;
+
         public enum FailedState
         {
             Pitch = 0,
@@ -65,7 +68,10 @@ namespace TestFlight.LRTF
             if (hasStarted)
             {
                 this.failedValue = 1f - (float)Math.Pow(ran.NextDouble(), 2);
-                this.failedState = (FailedState)ran.Next(0, 8);
+                if(includeTranslate)
+                    this.failedState = (FailedState)ran.Next(0, 8);
+                else
+                    this.failedState = (FailedState)ran.Next(0, 4);
             }
             base.vessel.OnFlyByWire -= this.OnFlyByWire;
             base.vessel.OnFlyByWire += this.OnFlyByWire;
