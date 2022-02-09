@@ -1,4 +1,5 @@
 ﻿using TestFlightCore;
+using UnityEngine;
 
 namespace TestFlightAPI
 {
@@ -7,6 +8,7 @@ namespace TestFlightAPI
         [KSPField]
         public string additionalDataRecorders = "";
 
+        private float previousData;
         private float additionalDataRecordersMax = 10000;
 
         private ITestFlightCore core = null;
@@ -56,29 +58,29 @@ namespace TestFlightAPI
             paramsNode.TryGetValue("additionalDataRecordersMax", ref additionalDataRecordersMax);
         }
 
-        public override void OnUpdate()
+        public override void OnSave(ConfigNode node)
         {
-            float currentMet = core.GetOperatingTime();
-           
-            if (IsRecordingFlightData())
+            if (HighLogic.LoadedSceneIsFlight)
             {
+                if (previousData == 0)
+                    previousData = core.GetInitialFlightData();
+
                 foreach (var data in dataRecorders)
                 {
                     if (TestFlightManagerScenario.Instance.GetFlightDataForPartName(data.Key) < additionalDataRecordersMax)
                     {
-                        float flightData = (currentMet - lastRecordedMet) * (data.Value[0] / 100) * flightDataMultiplier;
-                        float engineerBonus = core.GetEngineerDataBonus(flightDataEngineerModifier);
-                        flightData *= engineerBonus;
+                        float flightData = (core.GetFlightData() - previousData) * (data.Value[0] / 100);
                         if (flightData > 0)
                             TestFlightManagerScenario.Instance.AddFlightDataForPartName(data.Key, flightData);
                         if (TestFlightManagerScenario.Instance.GetFlightDataForPartName(data.Key) > additionalDataRecordersMax)
-                            TestFlightManagerScenario.Instance.SetFlightDataForPartName(data.Key, additionalDataRecordersMax); 
+                            TestFlightManagerScenario.Instance.SetFlightDataForPartName(data.Key, additionalDataRecordersMax);
                     }
                 }
+                previousData = core.GetFlightData();
             }
-            base.OnUpdate();
-
+            base.OnSave(node);
         }
+
         public override bool IsRecordingFlightData()
         {
             if(vessel.isActiveVessel)

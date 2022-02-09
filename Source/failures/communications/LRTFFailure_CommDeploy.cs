@@ -64,6 +64,7 @@ namespace TestFlight.LRTF
             transmitter.StopAllCoroutines();
             antenna.StopAllCoroutines();
             antenna.CheatRepair(); //not great but should never be callable if part is actually broken
+            antenna.deployState = ModuleDeployablePart.DeployState.RETRACTING;
             antenna.deployState = ModuleDeployablePart.DeployState.RETRACTED;
             antenna.Events["Extend"].guiActive = false;
             antenna.Events["Retract"].guiActive = false;

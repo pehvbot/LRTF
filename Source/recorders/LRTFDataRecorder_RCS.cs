@@ -15,7 +15,7 @@ namespace TestFlight.LRTF
 
         public override bool IsPartOperating()
         {
-            if (!(isEnabled && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfRCS))
+            if (!isEnabled || !HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfRCS || TimeWarp.CurrentRate > 4)
                 return false;
 
             //records only when active
