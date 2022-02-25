@@ -102,10 +102,13 @@ namespace TestFlight.LRTF
         
         public override void OnStartFinished(StartState state)
         {
-            base.OnStartFinished(state);
-            if ((failed || partialFailed) && doTriggeredFailure)
-                TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
-            hasStarted = true;
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+                base.OnStartFinished(state);
+                if ((failed || partialFailed) && doTriggeredFailure)
+                    TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
+                hasStarted = true;
+            }
         }
 
         public override void DoFailure()

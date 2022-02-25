@@ -32,11 +32,11 @@ namespace TestFlight.LRTF
 
             if ((float)base.vessel.horizontalSrfSpeed > 0f)
             {
-                if (this.wheelSteering.steeringEnabled && Math.Abs(this.wheelSteering.steeringInput) > 0f)
+                if (this.wheelSteering != null && this.wheelSteering.steeringEnabled && Math.Abs(this.wheelSteering.steeringInput) > 0f)
                     return true;
-                if (this.wheelBrakes.brakeInput < 0f)
+                if (this.wheelBrakes != null && this.wheelBrakes.enabled && this.wheelBrakes.brakeInput < 0f)
                     return true;
-                if (wheelMotor.motorEnabled && Math.Abs(wheelMotor.driveOutput) > 0f)
+                if (this.wheelMotor != null && this.wheelMotor.motorEnabled && Math.Abs(wheelMotor.driveOutput) > 0f)
                     return true;
             }
             return false;

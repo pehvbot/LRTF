@@ -57,6 +57,9 @@
         [GameParameters.CustomParameterUI("Decouplers", toolTip = "Enables and disableds decoupler data recording and part failures")]
         public bool lrtfDecouplers = true;
 
+        [GameParameters.CustomParameterUI("Fairings", toolTip = "Enables and disableds fairing data recording and part failures")]
+        public bool lrtfFairings = true;
+
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
             switch (preset)
@@ -72,6 +75,7 @@
                     lrtfAerodynamics = false;
                     lrtfCommunications = false;
                     lrtfDecouplers = false;
+                    lrtfFairings = false;
                     lrtfRepairAdjuster = 2;
                     break;
                 case GameParameters.Preset.Normal:

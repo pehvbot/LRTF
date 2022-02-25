@@ -71,7 +71,7 @@ namespace TestFlight.LRTF
             preLaunchFailures = HighLogic.CurrentGame.Parameters.CustomParams<TestFlightGameSettings>().preLaunchFailures;
             dynPressurePenalties = HighLogic.CurrentGame.Parameters.CustomParams<TestFlightGameSettings>().dynPressurePenalties;
             initialFlightData = core.GetInitialFlightData();
-            
+
         }
 
         public EngineRunData GetEngineRunDataForID(uint id)
@@ -85,7 +85,7 @@ namespace TestFlight.LRTF
                 return;
 
             // For each engine we are tracking, compare its current ignition state to our last known ignition state
-            foreach(var engine in engines)
+            foreach (var engine in engines)
             {
                 EngineModuleWrapper.EngineIgnitionState currentIgnitionState = engine.engine.IgnitionState;
                 var engineData = GetEngineRunDataForID(engine.engine.Module.PersistentId);
@@ -143,7 +143,7 @@ namespace TestFlight.LRTF
                     }
                 }
                 engine.ignitionState = currentIgnitionState;
-              
+
                 ignitionChanceString = $"{ignitionChance:P}";
                 if (dynPressurePenalties)
                     dynamicPressurePenaltyString = $"{1 - pressureModifier:P}";
@@ -179,8 +179,8 @@ namespace TestFlight.LRTF
         }
 
         public override void DoFailure()
-        {            
-            foreach( var engine in engines)
+        {
+            foreach (var engine in engines)
             {
                 if (engine.failEngine)
                 {
@@ -206,7 +206,7 @@ namespace TestFlight.LRTF
         public override float DoRepair()
         {
             base.DoRepair();
-            foreach(var engine in engines)
+            foreach (var engine in engines)
             {
                 // Prevent auto-ignition on repair
                 engine.engine.Shutdown();
