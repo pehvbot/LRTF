@@ -12,7 +12,7 @@ namespace TestFlight.LRTF
 
         private IEnumerator DoDecoupleDelayed()
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 20; i++)
                 yield return null;
 
             isDecoupling = false;
@@ -36,7 +36,7 @@ namespace TestFlight.LRTF
 
         private IEnumerator DoDecoupleDelayed()
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 20; i++)
                 yield return null;
 
             isDecoupling = false;
