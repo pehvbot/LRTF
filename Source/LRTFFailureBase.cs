@@ -105,8 +105,13 @@ namespace TestFlight.LRTF
             if (HighLogic.LoadedSceneIsFlight)
             {
                 base.OnStartFinished(state);
-                if ((failed || partialFailed) && doTriggeredFailure)
+                if ((Failed || partialFailed) && doTriggeredFailure)
+                {
+                    bool previousFailed = Failed;
+                    Failed = false;
                     TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
+                    Failed = previousFailed;
+                }
                 hasStarted = true;
             }
         }

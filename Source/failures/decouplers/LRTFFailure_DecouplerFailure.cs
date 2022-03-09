@@ -1,4 +1,5 @@
 ﻿using TestFlightAPI;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
@@ -37,6 +38,24 @@ namespace TestFlight.LRTF
             deploymentChanceString = $"{deploymentChance:P}";
         }
 
+        public override void SetActiveConfig(string alias)
+        {
+            base.SetActiveConfig(alias);
+
+            if (currentConfig == null) return;
+
+            // update current values with those from the current config node
+            deploymentChanceCurve = new FloatCurve();
+            if (currentConfig.HasNode("deploymentChanceCurve"))
+            {
+                deploymentChanceCurve.Load(currentConfig.GetNode("deploymentChanceCurve"));
+            }
+            else
+            {
+                deploymentChanceCurve.Add(0f, 1f);
+            }
+        }
+
         public override void OnUpdate()
         {
             bool isDecoupling = false;
@@ -51,17 +70,17 @@ namespace TestFlight.LRTF
                 attemptDecouple = false;
                 if (deploymentChance < core.RandomGenerator.NextDouble())
                 {
-                    Failed = true;
                     if (decouple != null)
                     {
                         decouple.canDecouple = false;
-                        TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
+                        core.TriggerNamedFailure(this.moduleName);
                     }
                     if (anchoredDecouple != null)
                     {
                         anchoredDecouple.canDecouple = false;
-                        TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
+                        core.TriggerNamedFailure(this.moduleName);
                     }
+                    Failed = true;
                 }
             }
         }
