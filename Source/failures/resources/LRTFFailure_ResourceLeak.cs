@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using TestFlightAPI;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
@@ -72,6 +73,18 @@ namespace TestFlight.LRTF
             leaks = new List<ResourceLeak>();
         }
 
+        public override void OnLoad(ConfigNode node)
+        {
+            base.OnLoad(node);
+            if (HighLogic.LoadedSceneIsFlight && node.HasNode("LEAK"))
+            {
+                foreach (ConfigNode leak in node.GetNodes("LEAK"))
+                {
+                    leaks.Add(new ResourceLeak(leak));
+                }
+            }
+        }
+
         public override void OnSave(ConfigNode node)
         {
             base.OnSave(node);
@@ -111,6 +124,7 @@ namespace TestFlight.LRTF
         {
             List<string> blacklist = this.resourceBlacklist.Split(',').ToList();
             List<PartResource> availableResources = new List<PartResource>();
+
 
             foreach(PartResource candidate in this.part.Resources)
             {
@@ -170,10 +184,13 @@ namespace TestFlight.LRTF
                 pawMessage = message;
             }
 
+            bool previousFailed = Failed;
             if (!hasStarted)
                 Failed = true;
 
             base.DoFailure();
+
+            Failed = previousFailed;
 
             //checks for partial failures
             //checks there isn't a resourceToLeak and resources still available.

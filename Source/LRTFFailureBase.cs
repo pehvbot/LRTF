@@ -108,9 +108,9 @@ namespace TestFlight.LRTF
                 if ((Failed || partialFailed) && doTriggeredFailure)
                 {
                     bool previousFailed = Failed;
-                    Failed = false;
-                    TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
-                    Failed = previousFailed;
+                    Failed = false; 
+                    core.TriggerNamedFailure(this.moduleName);
+                    Failed = previousFailed; 
                 }
                 hasStarted = true;
             }
@@ -131,7 +131,7 @@ namespace TestFlight.LRTF
                 MessageSystem.Instance.AddMessage(m);
             }
 
-            if (HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfOpenPAW && part.PartActionWindow == null && vessel.isActiveVessel)
+            if (HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfOpenPAW && part.PartActionWindow == null && vessel.isActiveVessel && hasStarted)
                 UIPartActionController.Instance.SpawnPartActionWindow(part);
 
             BasePAWGroup group = new BasePAWGroup();
