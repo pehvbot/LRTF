@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using UnityEngine;
 namespace TestFlight.LRTF
 {
     public class LRTFFailureBase_Gimbal : LRTFFailureBase
@@ -24,13 +24,14 @@ namespace TestFlight.LRTF
         public override void OnStart(PartModule.StartState state)
         {
             base.OnStart(state);
-            List<ModuleGimbal> gimbals = part.Modules.GetModules<ModuleGimbal>();
 
+            List<ModuleGimbal> gimbals = part.Modules.GetModules<ModuleGimbal>();
+            
             if (this.gimbalTransformName != "RANDOM")
             {
                 foreach(var g in gimbals)
                 {
-                    if(g.gimbalTransformName == gimbalTransformName && !g.gimbalLock && g.gimbalRange > 0f)
+                    if (g.gimbalTransformName == gimbalTransformName)
                     {
                         module = g;
                         return;
@@ -48,10 +49,14 @@ namespace TestFlight.LRTF
                     {
                         valid.Add(g);
                     }
+
                 }
-                int roll = UnityEngine.Random.Range(0, valid.Count);
-                module = valid[roll];
-                gimbalTransformName = module.gimbalTransformName;
+                if (valid.Count > 0)
+                {
+                    int roll = UnityEngine.Random.Range(0, valid.Count);
+                    module = valid[roll];
+                    gimbalTransformName = module.gimbalTransformName;
+                }
             }
         }
     }

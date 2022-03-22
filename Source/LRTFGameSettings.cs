@@ -20,9 +20,12 @@
 
         [GameParameters.CustomParameterUI("Enable Repairs?", toolTip = "Allows parts to be repaired.")]
         public bool lrtfEnableRepair = true;
-
+ 
         [GameParameters.CustomFloatParameterUI("Repair Difficulty Adjuster", toolTip = "Adjusts the difficulty of repairs.  Higher is more difficult.", asPercentage = false, minValue = 1, maxValue = 5, stepCount = 4)]
         public float lrtfRepairAdjuster = 3f;
+
+        [GameParameters.CustomFloatParameterUI("Failure Curve Randomizer", toolTip = "Adjusts randomization to parts for this save from 0 (none) to 5 (extreme).", asPercentage = false, minValue = 0, maxValue = 5, stepCount = 1)]
+        public float lrtfFailureCurveScaler = 3f;
 
         [GameParameters.CustomStringParameterUI("Failure Modes", autoPersistance = true, lines = 2, title = "\n<b>Failure Modes</b>", toolTip = "Enable or disable data recording and part failures")]
         public string UIstring = "";
@@ -57,9 +60,6 @@
         [GameParameters.CustomParameterUI("Decouplers", toolTip = "Enables and disableds decoupler data recording and part failures")]
         public bool lrtfDecouplers = true;
 
-        [GameParameters.CustomParameterUI("Fairings", toolTip = "Enables and disableds fairing data recording and part failures")]
-        public bool lrtfFairings = true;
-
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
             switch (preset)
@@ -75,8 +75,8 @@
                     lrtfAerodynamics = false;
                     lrtfCommunications = false;
                     lrtfDecouplers = false;
-                    lrtfFairings = false;
                     lrtfRepairAdjuster = 2;
+                    lrtfFailureCurveScaler = 0;
                     break;
                 case GameParameters.Preset.Normal:
                     break;

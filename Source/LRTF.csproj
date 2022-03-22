@@ -117,6 +117,7 @@
     <Compile Include="failures\decouplers\LRTFFailure_DecouplerFailure.cs" />
     <Compile Include="failures\decouplers\LRTFFailure_DecouplerDeploy.cs" />
     <Compile Include="LRTFFailureBase_Decouple.cs" />
+    <Compile Include="LRTFReliability.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="failures\aerodynamics\" />

@@ -42,15 +42,11 @@ namespace TestFlight.LRTF
         private double missionControlBonus = 0.3;
         private double noEngineerOnEVAPenalty = 0.5;
 
-        public override void OnAwake()
+        public override void OnLoad(ConfigNode node)
         {
             if (core == null)
                 core = TestFlightUtil.GetCore(this.part, Configuration);
-            base.OnAwake();
-        }
-        
-        public override void OnLoad(ConfigNode node)
-        {
+
             pawMessage = failureTitle;
             foreach(ConfigNode n in GameDatabase.Instance.GetConfigNodes("LRTFSETTINGS"))
             {
@@ -108,7 +104,8 @@ namespace TestFlight.LRTF
                 if ((Failed || partialFailed) && doTriggeredFailure)
                 {
                     bool previousFailed = Failed;
-                    Failed = false; 
+                    Failed = false;
+                    if(core != null)
                     core.TriggerNamedFailure(this.moduleName);
                     Failed = previousFailed; 
                 }

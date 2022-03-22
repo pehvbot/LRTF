@@ -38,7 +38,7 @@ namespace TestFlight.LRTF
 
             this.chute = base.part.FindModuleImplementing<ModuleParachute>();
 
-            deploymentChance = deploymentChanceCurve.Evaluate(core.GetInitialFlightData());
+            deploymentChance = deploymentChanceCurve.Evaluate(core.GetFlightData());
             deploymentChanceString = $"{deploymentChance:P}";
         }
 
