@@ -24,8 +24,6 @@ namespace TestFlight.LRTF
 
         public override void DoFailure()
         {
-           
-
             if (hasStarted)
             {
                 Vector2 limits = controlSurface.deployAngleLimits;

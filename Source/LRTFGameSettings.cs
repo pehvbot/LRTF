@@ -1,4 +1,8 @@
-﻿namespace TestFlight.LRTF
+﻿using System;
+using UnityEngine;
+using KSP.UI.Screens;
+
+namespace TestFlight.LRTF
 {
     public class LRTFGameSettings : GameParameters.CustomParameterNode
     {

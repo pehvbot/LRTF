@@ -52,6 +52,9 @@
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>..\dlls_1_12_2\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>..\dlls_1_12_2\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

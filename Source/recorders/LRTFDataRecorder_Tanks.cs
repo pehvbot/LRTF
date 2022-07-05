@@ -20,10 +20,6 @@ namespace TestFlight.LRTF
         private Dictionary<string, double> resourceAmounts = new Dictionary<string, double>();
         private List<PartResource> partResources;
 
-        public override void OnLoad(ConfigNode node)
-        {
-            base.OnLoad(node);
-        }
         public override void OnStart(StartState state)
         {
             //strip spaces
