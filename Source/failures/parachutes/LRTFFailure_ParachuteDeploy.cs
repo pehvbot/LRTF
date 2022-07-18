@@ -2,7 +2,7 @@
 
 namespace TestFlight.LRTF
 {
-    public class LRTFFailure_ParachuteDeploy : LRTFFailureBase
+    public class LRTFFailure_ParachuteDeploy : LRTFFailureBase_Parachute
     {
         [KSPField]
         public FloatCurve deploymentChanceCurve;
@@ -10,7 +10,6 @@ namespace TestFlight.LRTF
         [KSPField(guiName = "Parachute Deployment Chance", groupName = "LRTF", groupDisplayName = "Less Real Test Flight", guiActive = true)]
         private string deploymentChanceString;
 
-        private ModuleParachute chute;
         private double deploymentChance;
 
         [KSPField(isPersistant = true)]
@@ -36,15 +35,15 @@ namespace TestFlight.LRTF
             base.OnStart(state);
             core.DisableFailure(this.moduleName);
 
-            this.chute = base.part.FindModuleImplementing<ModuleParachute>();
-
             deploymentChance = deploymentChanceCurve.Evaluate(core.GetFlightData());
             deploymentChanceString = $"{deploymentChance:P}";
         }
 
         public override void OnUpdate()
         {
-            if(!parachuteActive && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfParachutes && (chute.deploymentState == ModuleParachute.deploymentStates.ACTIVE || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED))
+            if (chute == null)
+                return;
+            if (!parachuteActive && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfParachutes && (chute.deploymentState == ModuleParachute.deploymentStates.ACTIVE || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED))
             {
                 parachuteActive = true;
                 if(deploymentChance < core.RandomGenerator.NextDouble())

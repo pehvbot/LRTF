@@ -1,5 +1,5 @@
 ﻿using ModuleWheels;
-
+using UnityEngine;
 namespace TestFlight.LRTF
 {
     public class LRTFFailureBase_Wheel : LRTFFailureBase
@@ -16,6 +16,14 @@ namespace TestFlight.LRTF
             this.wheelSteering = base.part.FindModuleImplementing<ModuleWheelSteering>();
             this.wheelBrakes = base.part.FindModuleImplementing<ModuleWheelBrakes>();
             this.wheelMotor = base.part.FindModuleImplementing<ModuleWheelMotor>();
+            if (wheelBase == null && wheelSteering == null && wheelBrakes == null && wheelMotor == null)
+                Debug.Log("[LRTF] No ModuleWheel modules not found for " + part.name + "!  Recording will be disabled for this part!");
+        }
+        public override void DoFailure()
+        {
+            if (wheelBase == null && wheelSteering == null && wheelBrakes == null && wheelMotor == null)
+                return;
+            base.DoFailure();
         }
     }
 }

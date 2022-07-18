@@ -1,4 +1,5 @@
 ﻿using TestFlightAPI;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
@@ -9,7 +10,12 @@ namespace TestFlight.LRTF
         public override void OnStart(PartModule.StartState state)
         {
             base.OnStart(state);
-            chute = base.part.FindModuleImplementing<ModuleParachute>();
+            chute = part.FindModuleImplementing<ModuleParachute>();
+            if (chute == null)
+            {
+                isEnabled = false;
+                Debug.Log("[LRTF] ModuleParachute not found for " + part.name + "!  Recording will be disabled for this part!");
+            }
         }
 
         public override bool IsPartOperating()

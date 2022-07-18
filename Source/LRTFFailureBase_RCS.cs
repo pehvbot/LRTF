@@ -1,4 +1,5 @@
 ﻿using TestFlightAPI;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
@@ -10,7 +11,15 @@ namespace TestFlight.LRTF
         public override void OnStart(PartModule.StartState state)
         {
             base.OnStart(state);
-            this.rcs = base.part.FindModuleImplementing<ModuleRCS>();
+            rcs = base.part.FindModuleImplementing<ModuleRCS>();
+            if (rcs == null)
+                Debug.Log("[LRTF] ModuleRCS not found for " + part.name + "!  This failures will be disabled for this part!");
+        }
+        public override void DoFailure()
+        {
+            if (rcs == null)
+                return;
+            base.DoFailure();
         }
     }
 }

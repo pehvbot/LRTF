@@ -1,15 +1,7 @@
 ﻿namespace TestFlight.LRTF
 {
-    public class LRTFFailure_ParachuteFail : LRTFFailureBase
+    public class LRTFFailure_ParachuteFail : LRTFFailureBase_Parachute
     {
-        private ModuleParachute chute;
-
-        public override void OnStart(PartModule.StartState state)
-        {
-            base.OnStart(state);
-            this.chute = base.part.FindModuleImplementing<ModuleParachute>();
-        }
-
         public override void DoFailure()
         {
             if (chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED)

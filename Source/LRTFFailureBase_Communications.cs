@@ -1,4 +1,6 @@
-﻿namespace TestFlight.LRTF
+﻿using UnityEngine;
+
+namespace TestFlight.LRTF
 {
 
     public class LRTFFailureBase_Communications : LRTFFailureBase
@@ -11,7 +13,16 @@
         {
             base.OnStart(state);
             this.transmitter = base.part.FindModuleImplementing<ModuleDataTransmitter>();
-            originalPower = transmitter.antennaPower;
+            if(transmitter == null)
+                Debug.Log("[LRTF] ModuleDataTransmitter not found for " + part.name + "!  This failures will be disabled for this part!");
+            else
+                originalPower = transmitter.antennaPower;
+        }
+        public override void DoFailure()
+        {
+            if (transmitter == null)
+                return;
+            base.DoFailure();
         }
     }
 }

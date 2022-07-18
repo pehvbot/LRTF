@@ -1,4 +1,5 @@
 ﻿using TestFlightAPI;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
@@ -14,6 +15,11 @@ namespace TestFlight.LRTF
                 decouple = m;
             foreach (var m in part.FindModulesImplementing<LRTFModuleAnchoredDecoupler>())
                 anchoredDecoupler = m;
+            if (decouple == null && anchoredDecoupler == null)
+            {
+                isEnabled = false;
+                Debug.Log("[LRTF] LRTFModuleDecouple/LRTFModuleAnchoredDecoupler not found for " + part.name + "!  Recording will be disabled for this part!");
+            }
         }
 
         public override bool IsPartOperating()

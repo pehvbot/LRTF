@@ -1,10 +1,10 @@
 ﻿using TestFlightAPI;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
     public class LRTFDataRecorder_Aerodynamics : LRTFDataRecorderBase
     {
-
         [KSPField]
         public double minDynamicPressureRec = 1.0;
 
@@ -13,12 +13,17 @@ namespace TestFlight.LRTF
         public override void OnStart(StartState state)
         {
             base.OnStart(state);
-            this.controlSurface = base.part.FindModuleImplementing<ModuleControlSurface>();
+            controlSurface = part.FindModuleImplementing<ModuleControlSurface>();
+            if(controlSurface == null)
+            {
+                isEnabled = false;
+                Debug.Log("[LRTF] ModuleControlSurface not found for " + part.name + "!  Recording will be disabled for this part!");
+            }
         }
 
         public override bool IsPartOperating()
         {
-            if (!(isEnabled && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfAerodynamics))
+            if (!(isEnabled && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfAerodynamics && controlSurface))
                 return false;
 
             //records only when active
@@ -28,7 +33,7 @@ namespace TestFlight.LRTF
 
         public override bool IsRecordingFlightData()
         {
-            if (this.part.vessel.situation == Vessel.Situations.PRELAUNCH)
+            if (part.vessel.situation == Vessel.Situations.PRELAUNCH)
                 return false;
 
             return IsPartOperating();

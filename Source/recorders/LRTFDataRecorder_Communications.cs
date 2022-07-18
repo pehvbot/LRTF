@@ -1,4 +1,5 @@
 ﻿using TestFlightAPI;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
@@ -14,6 +15,11 @@ namespace TestFlight.LRTF
             foreach(var v in part.Modules.GetModules<ModuleDeployableAntenna>())
             {
                 antenna = v;
+            }
+            if (transmitter == null)
+            {
+                isEnabled = false;
+                Debug.Log("[LRTF] ModuleDataTransmitter not found for " + part.name + "!  Recording will be disabled for this part!");
             }
         }
         public override bool IsPartOperating()
@@ -31,7 +37,7 @@ namespace TestFlight.LRTF
 
         public override bool IsRecordingFlightData()
         {
-            if (this.part.vessel.situation == Vessel.Situations.PRELAUNCH)
+            if (part.vessel.situation == Vessel.Situations.PRELAUNCH)
                 return false;
 
             return IsPartOperating();

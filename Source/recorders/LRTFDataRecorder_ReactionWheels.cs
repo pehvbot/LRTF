@@ -1,4 +1,5 @@
 ﻿using TestFlightAPI;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
@@ -10,6 +11,11 @@ namespace TestFlight.LRTF
         {
             base.OnStart(state);
             module = base.part.FindModuleImplementing<ModuleReactionWheel>();
+            if (module == null)
+            {
+                isEnabled = false;
+                Debug.Log("[LRTF] ModuleReactionWheel not found for " + part.name + "!  Recording will be disabled for this part!");
+            }
         }
 
         public override bool IsPartOperating()

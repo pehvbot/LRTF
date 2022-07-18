@@ -1,4 +1,5 @@
-﻿namespace TestFlight.LRTF
+﻿using UnityEngine;
+namespace TestFlight.LRTF
 {
 
     public class LRTFFailureBase_Aerodynamics : LRTFFailureBase
@@ -8,7 +9,15 @@
         public override void OnStart(StartState state)
         {
             base.OnStart(state);
-            this.controlSurface = base.part.FindModuleImplementing<ModuleControlSurface>();
+            controlSurface = base.part.FindModuleImplementing<ModuleControlSurface>();
+            if (controlSurface == null)
+                Debug.Log("[LRTF] ModuleControlSurface not found for " + part.name + "!  This failures will be disabled for this part!");
+        }
+        public override void DoFailure()
+        {
+            if (controlSurface == null)
+                return;
+            base.DoFailure();
         }
     }
 }

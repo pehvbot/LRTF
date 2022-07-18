@@ -1,5 +1,6 @@
 ﻿using System;
 using TestFlightAPI;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
@@ -37,6 +38,8 @@ namespace TestFlight.LRTF
         {
             base.OnActive();
             moduleCommand = part.FindModuleImplementing<ModuleCommand>();
+            if (moduleCommand == null)
+                Debug.Log("[LRTF] ModuleCommand not found for " + part.name + "!  This failures will be disabled for this part!");
         }
         public override void OnLoad(ConfigNode node)
         {
@@ -61,6 +64,8 @@ namespace TestFlight.LRTF
 
         public override void DoFailure()
         {
+            if (moduleCommand == null)
+                return;
             if(core == null)
                 core = TestFlightUtil.GetCore(this.part, Configuration);
 

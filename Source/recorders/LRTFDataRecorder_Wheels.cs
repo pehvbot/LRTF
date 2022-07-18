@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using TestFlightAPI;
 using ModuleWheels;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
@@ -20,6 +21,11 @@ namespace TestFlight.LRTF
             wheelSteering = base.part.FindModuleImplementing<ModuleWheelSteering>();
             wheelBrakes = base.part.FindModuleImplementing<ModuleWheelBrakes>();
             wheelMotor = base.part.FindModuleImplementing<ModuleWheelMotor>();
+            if (wheel == null && wheelSteering == null && wheelBrakes == null && wheelMotor == null)
+            {
+                isEnabled = false;
+                Debug.Log("[LRTF] No ModuleWheel modules not found for " + part.name + "!  Recording will be disabled for this part!");
+            }
         }
         public override void OnAwake()
         {

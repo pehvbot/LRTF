@@ -1,4 +1,5 @@
 ﻿using TestFlightAPI;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
@@ -10,6 +11,11 @@ namespace TestFlight.LRTF
         {
             base.OnStart(state);
             command = part.Modules.GetModule<ModuleCommand>();
+            if (command == null)
+            {
+                isEnabled = false;
+                Debug.Log("[LRTF] ModuleCommand not found for " + part.name + "!  Recording will be disabled for this part!");
+            }
         }
         public override bool IsPartOperating()
         {
@@ -22,7 +28,7 @@ namespace TestFlight.LRTF
 
         public override bool IsRecordingFlightData()
         {
-            if (this.part.vessel.situation == Vessel.Situations.PRELAUNCH)
+            if (part.vessel.situation == Vessel.Situations.PRELAUNCH)
                 return false;
 
             return IsPartOperating();
