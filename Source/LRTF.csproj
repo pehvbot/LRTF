@@ -55,6 +55,15 @@
     <Reference Include="UnityEngine.AnimationModule">
       <HintPath>..\dlls_1_12_2\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
+    <Reference Include="ferramGraph">
+      <HintPath>..\dlls_1_12_2\ferramGraph.dll</HintPath>
+    </Reference>
+    <Reference Include="FerramAerospaceResearch">
+      <HintPath>..\dlls_1_12_2\FerramAerospaceResearch.dll</HintPath>
+    </Reference>
+    <Reference Include="FerramAerospaceResearch.Base">
+      <HintPath>..\dlls_1_12_2\FerramAerospaceResearch.Base.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
