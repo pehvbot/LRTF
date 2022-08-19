@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
@@ -59,7 +60,18 @@ namespace TestFlight.LRTF
             foreach (EngineHandler engine in engines)
             {
                 int id = engine.engine.Module.GetInstanceID();
-                if (engineStates.ContainsKey(id))
+
+                //happens when repaired in VAB
+                if(engineStates == null)
+                {
+                    engine.engine.enabled = true;
+                    engine.engine.Events["Activate"].active = true;
+                    engine.engine.Events["Activate"].guiActive = true;
+                    engine.engine.Events["Shutdown"].guiActive = true;
+                    engine.engine.failed = false;
+                    engine.engine.failMessage = "";
+                }
+                else if (engineStates.ContainsKey(id))
                 {
                     engine.engine.enabled = true;
                     engine.engine.Events["Activate"].active = true;
@@ -69,9 +81,9 @@ namespace TestFlight.LRTF
                     engine.engine.SetIgnitionCount(engineStates[id].numIgnitions);
                     engine.engine.failed = false;
                     engine.engine.failMessage = "";
+                    engineStates.Clear();
                 }
             }
-            engineStates.Clear();
             return 0;
         }
     }

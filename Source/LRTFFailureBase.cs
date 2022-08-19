@@ -48,9 +48,9 @@ namespace TestFlight.LRTF
                 core = TestFlightUtil.GetCore(this.part, Configuration);
 
             pawMessage = failureTitle;
-            foreach(ConfigNode n in GameDatabase.Instance.GetConfigNodes("LRTFSETTINGS"))
+            foreach (ConfigNode n in GameDatabase.Instance.GetConfigNodes("LRTFSETTINGS"))
             {
-                if(n.HasNode("REPAIRADJUSTERS"))
+                if (n.HasNode("REPAIRADJUSTERS"))
                 {
                     ConfigNode adjusters = n.GetNode("REPAIRADJUSTERS");
 
@@ -75,7 +75,7 @@ namespace TestFlight.LRTF
                     }
                 }
             }
-           
+
             node.TryGetValue("previousRepairChance", ref previousRepairChance);
             node.TryGetValue("partialFailed", ref partialFailed);
 
@@ -90,12 +90,13 @@ namespace TestFlight.LRTF
             node.SetValue("partialFailed", partialFailed, true);
             base.OnSave(node);
         }
+
         private void OnDestroy()
         {
             StopCoroutine(UpdatePAW());
             base.OnInactive();
         }
-        
+
         public override void OnStartFinished(StartState state)
         {
             if (HighLogic.LoadedSceneIsFlight)
@@ -105,14 +106,19 @@ namespace TestFlight.LRTF
                 {
                     bool previousFailed = Failed;
                     Failed = false;
-                    if(core != null)
-                    core.TriggerNamedFailure(this.moduleName);
-                    Failed = previousFailed; 
+                    if (core != null)
+                        core.TriggerNamedFailure(this.moduleName);
+                    Failed = previousFailed;
                 }
                 hasStarted = true;
             }
+            if (HighLogic.LoadedSceneIsEditor && ((Failed || partialFailed) && doTriggeredFailure))
+            {
+                ShowEditorRepair();
+            }
         }
 
+ 
         public override void DoFailure()
         {
             base.DoFailure();
@@ -165,6 +171,7 @@ namespace TestFlight.LRTF
                 {
                     Events["TryRepair"].guiName = $"<b>Attempt Repair</b>: {repairChance:P}";
                     Events["TryRepair"].guiActive = true;
+                    Events["TryRepair"].guiActiveEditor = true;
                     if (unfocusedRepair)
                     {
                         Events["TryRepair"].guiActiveUnfocused = true;
@@ -172,16 +179,18 @@ namespace TestFlight.LRTF
                         Events["TryRepair"].unfocusedRange = evaRepairDistance;
                     }
                     Fields["pawMessage"].guiActive = false;
+                    Fields["pawMessage"].guiActiveEditor = false;
                 }
                 else
                 {
                     Events["TryRepair"].guiActive = false;
+                    Events["TryRepair"].guiActiveEditor = false;
                     Events["TryRepair"].guiActiveUnfocused = false;
                     Events["TryRepair"].guiActiveUncommand = false;
                     Fields["pawMessage"].guiName = $"Last Repair Attempt: {previousRepairChance:P}";
                     Fields["pawMessage"].guiActive = true;
+                    Fields["pawMessage"].guiActiveEditor = true;
                 }
-
                 yield return null;
             }
         }
@@ -190,9 +199,12 @@ namespace TestFlight.LRTF
         {
 
             Fields["pawMessage"].guiActive = false;
+            Fields["pawMessage"].guiActiveEditor = false;
             Events["TryRepair"].guiActive = false;
+            Events["TryRepair"].guiActiveEditor = false;
             Events["TryRepair"].guiActiveUnfocused = false;
             Events["TryRepair"].guiActiveUncommand = false;
+            Events["ReplacePart"].guiActiveEditor = false;
 
             if (part.PartActionWindow != null)
                 part.PartActionWindow.displayDirty = true;
@@ -263,12 +275,23 @@ namespace TestFlight.LRTF
 
         private double RepairChance()
         {
+            if (!(HighLogic.LoadedSceneIsFlight || HighLogic.LoadedSceneIsEditor))
+                return 0;
+
             //Gets base repair chance which gets adjusted downwards depending on situation.
             float repairAdjuster = HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfRepairAdjuster - 1;
 
             double repairChance = core.FailureRateToMTBF(core.GetBaseReliabilityCurve().Evaluate(0), TestFlightUtil.MTBFUnits.SECONDS) * core.GetBaseFailureRate();
-          
             repairChance = 1 - (repairAdjuster * 10 + 1) * repairChance / (repairAdjuster * 10 * repairChance + 1);
+
+            if (HighLogic.LoadedSceneIsEditor)
+            {
+                //bonus for VAB/SPH (pick max regardless of where it's repaired)
+                repairChance += repairChance * (1 - repairChance) * Math.Max(ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.VehicleAssemblyBuilding),
+                    ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.SpaceplaneHangar));
+
+                return Math.Max(Math.Min(Math.Ceiling(repairChance * 100) / 100, 0.99), 0.01);
+            }
 
             //get situational adjusters
             double situationalAdjuster;
@@ -280,7 +303,7 @@ namespace TestFlight.LRTF
             if(this.vessel.connection != null && this.vessel.connection.IsConnected)
                 missionControlAdd = missionControlBonus * missionControlAdjuster
                     + (1 - missionControlBonus) * missionControlAdjuster * ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.MissionControl);
-         
+
             //crew adjusters
             bool hasTrainedCrew = false;
             bool hasEVA = false;
@@ -364,5 +387,56 @@ namespace TestFlight.LRTF
             return Math.Max(Math.Min(Math.Ceiling(repairChance * situationalAdjuster * 100) / 100, 0.99), 0.01);            
         }
 
+        public void ShowEditorRepair()
+        {
+            BasePAWGroup group = new BasePAWGroup();
+            group.displayName = "[" + this.failureType + "] " + pawMessage;
+            group.name = this.moduleName;
+
+            Fields["pawMessage"].group = group;
+            Events["TryRepair"].group = group;
+            Events["ReplacePart"].group = group;
+            if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
+                Events["ReplacePart"].guiName = $"<b>Replace:</b> {part.partInfo.cost}";
+            Events["ReplacePart"].guiActiveEditor = true;
+            Fields["pawMessage"].guiActiveEditor = true;
+
+            if (HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfEnableRepair && CanAttemptRepair())
+            {
+                Events["TryRepair"].guiName = $"<b>Attempt Repair</b>: {RepairChance():P}";
+                Events["TryRepair"].guiActiveEditor = true;
+                StartCoroutine(UpdatePAW());
+            }
+            else
+            {
+                Fields["pawMessage"].guiActive = true;
+            }
+        }
+
+        [KSPEvent(guiName = "Replace", active = true, guiActive = false, guiActiveEditor = false, guiActiveUnfocused = false)]
+        public void ReplacePart()
+        {
+            if (Funding.CanAfford(part.partInfo.cost) || HighLogic.CurrentGame.Mode != Game.Modes.CAREER)
+            {
+                TestFlightCore.TestFlightCore c = (TestFlightCore.TestFlightCore)part.Modules.GetModule<TestFlightCore.TestFlightCore>();
+                c.operatingTime = 0;
+                c.lastMET = 0;
+
+                LRTFReliability r = (LRTFReliability)part.Modules.GetModule<LRTFReliability>();
+                r.lastCheck = 0;
+                r.lastReliability = 1;
+
+                foreach (LRTFFailureBase m in part.Modules.GetModules<LRTFFailureBase>())
+                {
+                    if(m.failed || m.partialFailed)
+                        m.DoRepair();
+                }
+
+                if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
+                {
+                    Funding.Instance.SetFunds(Funding.Instance.Funds - part.partInfo.cost, TransactionReasons.Vessels);
+                }
+            }
+        }
     }
 }

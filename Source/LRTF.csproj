@@ -64,6 +64,9 @@
     <Reference Include="FerramAerospaceResearch.Base">
       <HintPath>..\dlls_1_12_2\FerramAerospaceResearch.Base.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\dlls_1_12_2\UnityEngine.UI.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -131,6 +134,7 @@
     <Compile Include="LRTFFailureBase_Decouple.cs" />
     <Compile Include="LRTFReliability.cs" />
     <Compile Include="LRTFFailureBase_Parachute.cs" />
+    <Compile Include="LRTFEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="failures\aerodynamics\" />
