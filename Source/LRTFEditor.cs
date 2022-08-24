@@ -17,10 +17,12 @@ namespace LRTF
     {
         private ApplicationLauncherButton appLauncherButton;
         private bool finishedShowFailedPAWs;
+        private bool buttonAdded = false;
 
         public void Start()
         {
-            StartCoroutine("AddToToolbar");
+            if(!buttonAdded)
+                StartCoroutine("AddToToolbar");
         }
 
 
@@ -49,6 +51,7 @@ namespace LRTF
                     iconTexture);
                 //ApplicationLauncher.Instance.AddOnHideCallback(HideButton);
                 //ApplicationLauncher.Instance.AddOnRepositionCallback(RepostionWindow);
+                buttonAdded = true;
             }
             catch (Exception e)
             {

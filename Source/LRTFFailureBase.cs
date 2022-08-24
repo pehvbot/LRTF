@@ -7,7 +7,7 @@ using System.Collections;
 namespace TestFlight.LRTF
 {
 
-    public class LRTFFailureBase : TestFlightFailureBase
+    public class LRTFFailureBase : TestFlightFailureBase, IPartCostModifier
     {
         [KSPField(guiActive = false, guiName = "<b>TYPE</b>", guiActiveEditor = false, guiActiveUnfocused = true)]
         public string pawMessage = "Failure";
@@ -41,6 +41,9 @@ namespace TestFlight.LRTF
         private int crewLevelBonus = 5;
         private double missionControlBonus = 0.3;
         private double noEngineerOnEVAPenalty = 0.5;
+
+        //replacement cost
+        private double replacementCost;
 
         public override void OnLoad(ConfigNode node)
         {
@@ -421,11 +424,11 @@ namespace TestFlight.LRTF
                 TestFlightCore.TestFlightCore c = (TestFlightCore.TestFlightCore)part.Modules.GetModule<TestFlightCore.TestFlightCore>();
                 c.operatingTime = 0;
                 c.lastMET = 0;
-
+                
                 LRTFReliability r = (LRTFReliability)part.Modules.GetModule<LRTFReliability>();
                 r.lastCheck = 0;
                 r.lastReliability = 1;
-
+                
                 foreach (LRTFFailureBase m in part.Modules.GetModules<LRTFFailureBase>())
                 {
                     if(m.failed || m.partialFailed)
@@ -434,9 +437,25 @@ namespace TestFlight.LRTF
 
                 if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
                 {
-                    Funding.Instance.SetFunds(Funding.Instance.Funds - part.partInfo.cost, TransactionReasons.Vessels);
+                    replacementCost = (double)part.partInfo.cost;
+                    //Funding.Instance.SetFunds(Funding.Instance.Funds - part.partInfo.cost, TransactionReasons.Vessels);
                 }
+                // refresh this part ui
+                MonoUtilities.RefreshContextWindows(part);
+
+                // refresh VAB ui
+                GameEvents.onEditorShipModified.Fire(EditorLogic.fetch.ship);
             }
+        }
+
+        public float GetModuleCost(float defaultCost, ModifierStagingSituation sit)
+        {
+            return (float)replacementCost;
+        }
+
+        public ModifierChangeWhen GetModuleCostChangeWhen()
+        {
+            return ModifierChangeWhen.CONSTANTLY;
         }
     }
 }
