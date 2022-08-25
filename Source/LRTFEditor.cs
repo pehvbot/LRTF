@@ -15,16 +15,19 @@ namespace LRTF
     [KSPAddon(KSPAddon.Startup.EditorAny, false)]
     public class LRTFEditor : MonoBehavior
     {
-        private ApplicationLauncherButton appLauncherButton;
+        private ApplicationLauncherButton _button;
         private bool finishedShowFailedPAWs;
-        private bool buttonAdded = false;
 
         public void Start()
         {
-            if(!buttonAdded)
-                StartCoroutine("AddToToolbar");
+            StartCoroutine("AddToToolbar");
         }
 
+        public void OnDestroy()
+        {
+            if(_button != null)
+                ApplicationLauncher.Instance.RemoveModApplication(_button);
+        }
 
         IEnumerator AddToToolbar()
         {
@@ -38,9 +41,9 @@ namespace LRTF
                 Texture iconTexture = GameDatabase.Instance.GetTexture("TestFlight/Resources/AppLauncherIcon", false);
                 if (iconTexture == null)
                 {
-                    throw new Exception("TestFlight MasterStatusDisplay: Failed to load icon texture");
+                    throw new Exception("LRTF: Failed to load icon texture");
                 }
-                appLauncherButton = ApplicationLauncher.Instance.AddModApplication(
+                _button = ApplicationLauncher.Instance.AddModApplication(
                     ShowFailedPAWs,
                     ShowFailedPAWs,
                     null,
@@ -49,15 +52,13 @@ namespace LRTF
                     null,
                     ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH,
                     iconTexture);
-                //ApplicationLauncher.Instance.AddOnHideCallback(HideButton);
-                //ApplicationLauncher.Instance.AddOnRepositionCallback(RepostionWindow);
-                buttonAdded = true;
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
+
         internal void ShowFailedPAWs()
         {
             finishedShowFailedPAWs = false;

@@ -419,33 +419,29 @@ namespace TestFlight.LRTF
         [KSPEvent(guiName = "Replace", active = true, guiActive = false, guiActiveEditor = false, guiActiveUnfocused = false)]
         public void ReplacePart()
         {
-            if (Funding.CanAfford(part.partInfo.cost) || HighLogic.CurrentGame.Mode != Game.Modes.CAREER)
+            
+            TestFlightCore.TestFlightCore c = (TestFlightCore.TestFlightCore)part.Modules.GetModule<TestFlightCore.TestFlightCore>();
+            c.operatingTime = 0;
+            c.lastMET = 0;
+                
+            LRTFReliability r = (LRTFReliability)part.Modules.GetModule<LRTFReliability>();
+            r.lastCheck = 0;
+            r.lastReliability = 1;
+
+            foreach (LRTFFailureBase m in part.Modules.GetModules<LRTFFailureBase>())
             {
-                TestFlightCore.TestFlightCore c = (TestFlightCore.TestFlightCore)part.Modules.GetModule<TestFlightCore.TestFlightCore>();
-                c.operatingTime = 0;
-                c.lastMET = 0;
-                
-                LRTFReliability r = (LRTFReliability)part.Modules.GetModule<LRTFReliability>();
-                r.lastCheck = 0;
-                r.lastReliability = 1;
-                
-                foreach (LRTFFailureBase m in part.Modules.GetModules<LRTFFailureBase>())
-                {
-                    if(m.failed || m.partialFailed)
-                        m.DoRepair();
-                }
+                if (m.failed || m.partialFailed)
+                    m.DoRepair();
+            }
 
-                if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
-                {
-                    replacementCost = (double)part.partInfo.cost;
-                    //Funding.Instance.SetFunds(Funding.Instance.Funds - part.partInfo.cost, TransactionReasons.Vessels);
-                }
-                // refresh this part ui
+            if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
+            {
+                replacementCost = (double)part.partInfo.cost;
+
                 MonoUtilities.RefreshContextWindows(part);
-
-                // refresh VAB ui
                 GameEvents.onEditorShipModified.Fire(EditorLogic.fetch.ship);
             }
+             
         }
 
         public float GetModuleCost(float defaultCost, ModifierStagingSituation sit)
