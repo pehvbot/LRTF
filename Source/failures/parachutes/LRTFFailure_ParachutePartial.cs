@@ -2,7 +2,8 @@
 {
     public class LRTFFailure_ParachuPartial : LRTFFailureBase_Parachute
     {
-        private float deployAltitude;
+        [KSPField(isPersistant = true)]
+        public float deployAltitude;
 
         public override void DoFailure()
         {

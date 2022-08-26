@@ -76,7 +76,7 @@ namespace TestFlight.LRTF
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
-            if (HighLogic.LoadedSceneIsFlight && node.HasNode("LEAK"))
+            if (node.HasNode("LEAK"))
             {
                 foreach (ConfigNode leak in node.GetNodes("LEAK"))
                 {

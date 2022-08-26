@@ -2,6 +2,7 @@
 {
     public class LRTFFailure_WheelSteer : LRTFFailureBase_Wheel
     {
+        [KSPField(isPersistant = true)]
         private bool state;
 
         public override void DoFailure()

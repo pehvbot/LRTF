@@ -2,6 +2,7 @@
 {
     public class LRTFFailure_WheelBrake : LRTFFailureBase_Wheel
     {
+        [KSPField(isPersistant = true)]
         private float breakTweakable;
 
         public override void DoFailure()

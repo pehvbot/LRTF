@@ -4,8 +4,11 @@ namespace TestFlight.LRTF
 {
     public class LRTFFailure_AerodynamicsDeployed : LRTFFailureBase_Aerodynamics
     {
+        [KSPField(isPersistant = true)]
         bool startingDeployState;
+        [KSPField(isPersistant = true)]
         float startingDeployAngle = 0;
+        [KSPField(isPersistant = true)]
         float deployAngle = 0;
         
         public override void OnSave(ConfigNode node)

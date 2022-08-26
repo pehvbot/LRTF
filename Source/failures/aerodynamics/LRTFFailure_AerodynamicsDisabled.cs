@@ -2,8 +2,11 @@
 {
     public class LRTFFailure_AerodynamicsDisabled : LRTFFailureBase_Aerodynamics
     {
+        [KSPField(isPersistant = true)]
         bool yawState;
+        [KSPField(isPersistant = true)]
         bool pitchState;
+        [KSPField(isPersistant = true)]
         bool rollState;
 
         public override void DoFailure()

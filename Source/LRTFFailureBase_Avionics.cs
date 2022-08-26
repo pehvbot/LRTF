@@ -32,6 +32,7 @@ namespace TestFlight.LRTF
 
         private ModuleCommand moduleCommand;
 
+        [KSPField(isPersistant = true)]
         private bool hasHibernation;
 
         public override void OnAwake()

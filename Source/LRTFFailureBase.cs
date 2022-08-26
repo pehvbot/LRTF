@@ -7,7 +7,7 @@ using System.Collections;
 namespace TestFlight.LRTF
 {
 
-    public class LRTFFailureBase : TestFlightFailureBase, IPartCostModifier
+    public class LRTFFailureBase : TestFlightFailureBase
     {
         [KSPField(guiActive = false, guiName = "<b>TYPE</b>", guiActiveEditor = false, guiActiveUnfocused = true)]
         public string pawMessage = "Failure";
@@ -42,8 +42,7 @@ namespace TestFlight.LRTF
         private double missionControlBonus = 0.3;
         private double noEngineerOnEVAPenalty = 0.5;
 
-        //replacement cost
-        private double replacementCost;
+ 
 
         public override void OnLoad(ConfigNode node)
         {
@@ -207,7 +206,6 @@ namespace TestFlight.LRTF
             Events["TryRepair"].guiActiveEditor = false;
             Events["TryRepair"].guiActiveUnfocused = false;
             Events["TryRepair"].guiActiveUncommand = false;
-            Events["ReplacePart"].guiActiveEditor = false;
 
             if (part.PartActionWindow != null)
                 part.PartActionWindow.displayDirty = true;
@@ -398,10 +396,11 @@ namespace TestFlight.LRTF
 
             Fields["pawMessage"].group = group;
             Events["TryRepair"].group = group;
-            Events["ReplacePart"].group = group;
-            if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
-                Events["ReplacePart"].guiName = $"<b>Replace:</b> {part.partInfo.cost}";
-            Events["ReplacePart"].guiActiveEditor = true;
+
+            LRTFReliability r = part.Modules.GetModule<LRTFReliability>();
+            if (r != null)
+                r.DisplayReplace();
+
             Fields["pawMessage"].guiActiveEditor = true;
 
             if (HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfEnableRepair && CanAttemptRepair())
@@ -416,42 +415,6 @@ namespace TestFlight.LRTF
             }
         }
 
-        [KSPEvent(guiName = "Replace", active = true, guiActive = false, guiActiveEditor = false, guiActiveUnfocused = false)]
-        public void ReplacePart()
-        {
-            
-            TestFlightCore.TestFlightCore c = (TestFlightCore.TestFlightCore)part.Modules.GetModule<TestFlightCore.TestFlightCore>();
-            c.operatingTime = 0;
-            c.lastMET = 0;
-                
-            LRTFReliability r = (LRTFReliability)part.Modules.GetModule<LRTFReliability>();
-            r.lastCheck = 0;
-            r.lastReliability = 1;
 
-            foreach (LRTFFailureBase m in part.Modules.GetModules<LRTFFailureBase>())
-            {
-                if (m.failed || m.partialFailed)
-                    m.DoRepair();
-            }
-
-            if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER)
-            {
-                replacementCost = (double)part.partInfo.cost;
-
-                MonoUtilities.RefreshContextWindows(part);
-                GameEvents.onEditorShipModified.Fire(EditorLogic.fetch.ship);
-            }
-             
-        }
-
-        public float GetModuleCost(float defaultCost, ModifierStagingSituation sit)
-        {
-            return (float)replacementCost;
-        }
-
-        public ModifierChangeWhen GetModuleCostChangeWhen()
-        {
-            return ModifierChangeWhen.CONSTANTLY;
-        }
     }
 }

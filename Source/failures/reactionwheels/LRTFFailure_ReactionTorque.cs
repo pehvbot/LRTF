@@ -2,9 +2,13 @@
 {
     public class LRTFFailure_ReactionTorque : LRTFFailureBase_ReactionWheel
     {
+        [KSPField(isPersistant = true)]
         private float PitchTorque;
+        [KSPField(isPersistant = true)]
         private float RollTorque;
+        [KSPField(isPersistant = true)]
         private float YawTorque;
+
         private float failedPitchTorque;
         private float failedRollTorque;
         private float failedYawTorque;

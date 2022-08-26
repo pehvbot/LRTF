@@ -4,9 +4,11 @@ namespace TestFlight.LRTF
 {
     public class LRTFFailure_RCSShutdown : LRTFFailureBase_RCS
     {
+        [KSPField(isPersistant = true)]
         private float previousThrustPower;
-
+        [KSPField(isPersistant = true)]
         private bool stateEnabled;
+        [KSPField(isPersistant = true)]
         private bool statercsEnabled;
 
         public override void DoFailure()

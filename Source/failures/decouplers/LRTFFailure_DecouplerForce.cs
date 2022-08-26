@@ -2,6 +2,7 @@
 {
     public class LRTFFailure_DecouplerForce : LRTFFailureBase_Decoupler
     {
+        [KSPField(isPersistant = true)]
         private float originalForce;
 
         public override void OnLoad(ConfigNode node)

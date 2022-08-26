@@ -12,7 +12,7 @@ namespace TestFlight.LRTF
     /// <summary>
     /// This part module determines the part's current reliability and passes that on to the TestFlight core.
     /// </summary>
-    public class LRTFReliability : TestFlightReliabilityBase
+    public class LRTFReliability : TestFlightReliabilityBase, IPartCostModifier
     {
         [KSPField]
         public ConfigNode lrtfReliabilityCurve;
@@ -26,6 +26,9 @@ namespace TestFlight.LRTF
         private float kinkV = 0.75f;
         private float kinkH = 0.225f;
         private float kinkW = 0.5f;
+
+        //replacement cost
+        private double replacementCost;
 
         public override void OnLoad(ConfigNode node)
         {
@@ -149,6 +152,52 @@ namespace TestFlight.LRTF
             infoStrings.Add($"<b>Maximum Reliability</b>: {maxReliability:P1} at full burn, {maxMTBF} <b>MTBF</b>");
 
             return infoStrings;
+        }
+
+        public void DisplayReplace()
+        {
+
+            BasePAWGroup group = new BasePAWGroup();
+            group.displayName = $"[Replace Part]";
+            group.name = this.moduleName;
+
+            Events["ReplacePart"].group = group;
+            Events["ReplacePart"].guiName = $"<b>Cost:</b> {part.partInfo.cost}";
+            Events["ReplacePart"].guiActiveEditor = true;
+        }
+
+        [KSPEvent(guiName = "Replace", active = true, guiActive = false, guiActiveEditor = false, guiActiveUnfocused = false)]
+        public void ReplacePart()
+        {
+
+            TestFlightCore.TestFlightCore c = (TestFlightCore.TestFlightCore)part.Modules.GetModule<TestFlightCore.TestFlightCore>();
+            c.operatingTime = 0;
+            c.lastMET = 0;
+
+            lastCheck = 0;
+            lastReliability = 1;
+
+            foreach (LRTFFailureBase m in part.Modules.GetModules<LRTFFailureBase>())
+            {
+                if (m.failed || m.partialFailed)
+                    m.DoRepair();
+            }
+
+            replacementCost = (double)part.partInfo.cost;
+            Events["ReplacePart"].guiActiveEditor = false;
+
+            MonoUtilities.RefreshContextWindows(part);
+            GameEvents.onEditorShipModified.Fire(EditorLogic.fetch.ship);
+        }
+
+        public float GetModuleCost(float defaultCost, ModifierStagingSituation sit)
+        {
+            return (float)replacementCost;
+        }
+
+        public ModifierChangeWhen GetModuleCostChangeWhen()
+        {
+            return ModifierChangeWhen.CONSTANTLY;
         }
     }
 }
