@@ -27,8 +27,8 @@ namespace TestFlight.LRTF
         private float kinkH = 0.225f;
         private float kinkW = 0.5f;
 
-        //replacement cost
-        private double replacementCost;
+        //rebuild cost
+        private double rebuildCost;
 
         public override void OnLoad(ConfigNode node)
         {
@@ -55,7 +55,7 @@ namespace TestFlight.LRTF
 
                 //randomizers.  uses new 'r' variable to avoid doubling randomizing
                 //increments partSeed by 1 to get the same random value per save+part combo
-                float rcycleReliabilityStart = cycleReliabilityStart + Randomize(cycleReliabilityStart, cycleReliabilityEnd, partSeed, scaler);
+                float rcycleReliabilityStart = cycleReliabilityStart + Randomize(0, cycleReliabilityStart, partSeed, scaler);
                 float rcycleReliabilityEnd = cycleReliabilityEnd + Randomize(cycleReliabilityEnd, 1, partSeed + 1, scaler);
                 float rkinkH = kinkH + Randomize(0, kinkH, partSeed + 2, scaler);
                 float rkinkV = kinkV + Randomize(kinkV, 1, partSeed + 3, scaler);
@@ -86,7 +86,7 @@ namespace TestFlight.LRTF
         private float Randomize(float start, float end, int seed, float scaler)
         {
             KSPRandom r = new KSPRandom(seed);
-            return (((end - start) * (float)r.NextDouble() - (end - start) / 2)) * scaler;
+            return (((end - start) * (float)r.NextDouble() - (end - start) / 2)) * scaler;          
         }
 
         public override string GetModuleInfo(string configuration, float reliabilityAtTime)
@@ -154,20 +154,20 @@ namespace TestFlight.LRTF
             return infoStrings;
         }
 
-        public void DisplayReplace()
+        public void DisplayRebuild()
         {
 
             BasePAWGroup group = new BasePAWGroup();
-            group.displayName = $"[Replace Part]";
+            group.displayName = $"[Rebuild Part]";
             group.name = this.moduleName;
 
-            Events["ReplacePart"].group = group;
-            Events["ReplacePart"].guiName = $"<b>Cost:</b> {part.partInfo.cost}";
-            Events["ReplacePart"].guiActiveEditor = true;
+            Events["RebuildPart"].group = group;
+            Events["RebuildPart"].guiName = $"<b>Cost:</b> {part.partInfo.cost}";
+            Events["RebuildPart"].guiActiveEditor = true;
         }
 
-        [KSPEvent(guiName = "Replace", active = true, guiActive = false, guiActiveEditor = false, guiActiveUnfocused = false)]
-        public void ReplacePart()
+        [KSPEvent(guiName = "Rebuild", active = true, guiActive = false, guiActiveEditor = false, guiActiveUnfocused = false)]
+        public void RebuildPart()
         {
 
             TestFlightCore.TestFlightCore c = (TestFlightCore.TestFlightCore)part.Modules.GetModule<TestFlightCore.TestFlightCore>();
@@ -183,8 +183,8 @@ namespace TestFlight.LRTF
                     m.DoRepair();
             }
 
-            replacementCost = (double)part.partInfo.cost;
-            Events["ReplacePart"].guiActiveEditor = false;
+            rebuildCost = (double)part.partInfo.cost;
+            Events["RebuildPart"].guiActiveEditor = false;
 
             MonoUtilities.RefreshContextWindows(part);
             GameEvents.onEditorShipModified.Fire(EditorLogic.fetch.ship);
@@ -192,7 +192,7 @@ namespace TestFlight.LRTF
 
         public float GetModuleCost(float defaultCost, ModifierStagingSituation sit)
         {
-            return (float)replacementCost;
+            return (float)rebuildCost;
         }
 
         public ModifierChangeWhen GetModuleCostChangeWhen()

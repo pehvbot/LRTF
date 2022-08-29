@@ -399,7 +399,7 @@ namespace TestFlight.LRTF
 
             LRTFReliability r = part.Modules.GetModule<LRTFReliability>();
             if (r != null)
-                r.DisplayReplace();
+                r.DisplayRebuild();
 
             Fields["pawMessage"].guiActiveEditor = true;
 
