@@ -1,17 +1,24 @@
 ﻿using TestFlightAPI;
 using UnityEngine;
+using LRTF;
 
 namespace TestFlight.LRTF
 {
     public class LRTFDataRecorder_Parachutes : LRTFDataRecorderBase
     {
         ModuleParachute chute;
+        PartModule far;
 
         public override void OnStart(PartModule.StartState state)
         {
             base.OnStart(state);
             chute = part.FindModuleImplementing<ModuleParachute>();
-            if (chute == null)
+            foreach(var p in part.Modules)
+            {
+                if (p.moduleName == "RealChuteFAR")
+                    far = p;
+            }
+            if (chute == null && far == null)
             {
                 isEnabled = false;
                 Debug.Log("[LRTF] ModuleParachute not found for " + part.name + "!  Recording will be disabled for this part!");
@@ -23,7 +30,15 @@ namespace TestFlight.LRTF
             if (!isEnabled || !HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfParachutes || TimeWarp.CurrentRate > 4)
                 return false;
 
-            return (chute.deploymentState == ModuleParachute.deploymentStates.ACTIVE || chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED);
+            if(far != null)
+            {
+                return ModWrapper.FerramWrapper.IsDeployed(far);
+            }
+            if(chute != null)
+                return (chute.deploymentState
+                    == ModuleParachute.deploymentStates.ACTIVE || chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED);
+
+            return false;
         }
 
         public override bool IsRecordingFlightData()

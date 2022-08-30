@@ -67,6 +67,9 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>..\dlls_1_12_2\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="RealChute">
+      <HintPath>..\dlls_1_12_2\RealChute.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -135,6 +138,7 @@
     <Compile Include="LRTFReliability.cs" />
     <Compile Include="LRTFFailureBase_Parachute.cs" />
     <Compile Include="LRTFEditor.cs" />
+    <Compile Include="ModWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="failures\aerodynamics\" />
