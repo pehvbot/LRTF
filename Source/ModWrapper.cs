@@ -165,6 +165,14 @@ namespace LRTF
                 DEPLOYED,
                 CUT
             }
+            public enum DragCubeStates
+            {
+                STOWED,
+                RCDEPLOYED,
+                DEPLOYED,
+                SEMIDEPOLOYED,
+                PACKED
+            }
 
             public static void CutChute(PartModule p)
             {
@@ -178,15 +186,12 @@ namespace LRTF
                 SetReflectionField<float>(p, "minAirPressureToOpen", currMinPressure);
             }
 
-            public static void ReefChute(PartModule p, float alt = 0)
-            {
-                SetReflectionField<float>(p, "deployAltitude", alt);
-            }
-
             public static bool IsDeployed(PartModule p)
             {
-                DeploymentStates state = GetDeploymentState(p);
-                return (state == DeploymentStates.DEPLOYED || state == DeploymentStates.PREDEPLOYED);
+                //Debug.Log("[LRTF] init:" + GetReflectionField<string>(p, "depState"));
+                return GetReflectionField<bool>(p, "armed") || GetReflectionProperty<bool>(p, "IsDeployed");
+                //RealChuteFAR r = new RealChuteFAR();
+                //r.depState
             }
 
             public static DeploymentStates GetDeploymentState(PartModule p)
@@ -194,6 +199,21 @@ namespace LRTF
                 return GetReflectionProperty<DeploymentStates>(p, "DeploymentState");
             }
 
+            public static void SetDeploymentAltitude(PartModule p, float alt = 0)
+            {
+                SetReflectionField<float>(p, "deployAltitude", alt);
+                RealChuteFAR r = new RealChuteFAR();
+            }
+
+            public static float GetDeployAltitude(PartModule p)
+            {
+                return GetReflectionField<float>(p, "deployAltitude");
+            }
+
+            public static void AssumeDragCubePosition(PartModule p, string pos)
+            {
+                p.GetType().GetMethod("AssumeDragCubePosition").Invoke(p, new object[] { pos });
+            }
         }
 
         //Relfection Helpers. 

@@ -139,6 +139,10 @@
     <Compile Include="LRTFFailureBase_Parachute.cs" />
     <Compile Include="LRTFEditor.cs" />
     <Compile Include="ModWrapper.cs" />
+    <Compile Include="recorders\LRTFDataRecorder_RealChuteFAR.cs" />
+    <Compile Include="failures\parachutes\LRTFFailure_RealChuteFARFail.cs" />
+    <Compile Include="LRTFFailureBase_RealChuteFAR.cs" />
+    <Compile Include="failures\parachutes\LRTFFailure_RealChuteFARPartial.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="failures\aerodynamics\" />

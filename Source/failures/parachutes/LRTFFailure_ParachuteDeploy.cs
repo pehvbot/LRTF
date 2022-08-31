@@ -1,4 +1,5 @@
 ﻿using TestFlightAPI;
+using UnityEngine;
 
 namespace TestFlight.LRTF
 {
@@ -14,8 +15,7 @@ namespace TestFlight.LRTF
 
         [KSPField(isPersistant = true)]
         private bool parachuteActive = false;
-        
-       
+
         public override void OnLoad(ConfigNode node)
         {
             if (deploymentChanceCurve == null)
@@ -41,17 +41,16 @@ namespace TestFlight.LRTF
 
         public override void OnUpdate()
         {
-            if (chute == null)
-                return;
             if (!parachuteActive && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfParachutes && (chute.deploymentState == ModuleParachute.deploymentStates.ACTIVE || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED))
             {
                 parachuteActive = true;
-                if(deploymentChance < core.RandomGenerator.NextDouble())
+                if (deploymentChance < core.RandomGenerator.NextDouble())
                 {
                     Failed = true;
                     TestFlightUtil.GetCore(this.part, Configuration).TriggerNamedFailure(this.moduleName);
                 }
             }
+
         }
 
         public override void DoFailure()
