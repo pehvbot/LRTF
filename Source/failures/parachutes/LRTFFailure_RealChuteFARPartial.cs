@@ -14,7 +14,7 @@ namespace TestFlight.LRTF
             chute.Fields["deployAltitude"].guiActive = false;
 
             if (ModWrapper.FerramWrapper.GetDeploymentState(chute) == ModWrapper.FerramWrapper.DeploymentStates.DEPLOYED)
-                ModWrapper.FerramWrapper.AssumeDragCubePosition(chute, "SEMIDEPLOYED");
+                ModWrapper.FerramWrapper.PreDeploy(chute);
 
             base.DoFailure();
         }
@@ -25,8 +25,7 @@ namespace TestFlight.LRTF
 
             ModWrapper.FerramWrapper.SetDeploymentAltitude(chute, deployAltitude);
             chute.Fields["deployAltitude"].guiActive = true;
-            if (ModWrapper.FerramWrapper.GetDeploymentState(chute) == ModWrapper.FerramWrapper.DeploymentStates.DEPLOYED)
-                ModWrapper.FerramWrapper.AssumeDragCubePosition(chute, "DEPLOYED");
+            //ModWrapper.FerramWrapper.DeployChute(chute);
             return 0f;
         }
     }

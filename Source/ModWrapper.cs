@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
-using RealChute;
+//using RealChute;
 using FerramAerospaceResearch.RealChuteLite;
 
 namespace LRTF
@@ -178,6 +178,7 @@ namespace LRTF
             {
                 p.GetType().GetMethod("Cut").Invoke(p, null);
             }
+
             public static void DeployChute(PartModule p)
             {
                 float currMinPressure = GetReflectionField<float>(p, "minAirPressureToOpen");
@@ -186,12 +187,15 @@ namespace LRTF
                 SetReflectionField<float>(p, "minAirPressureToOpen", currMinPressure);
             }
 
+            public static void PreDeploy(PartModule p)
+            {
+                SetReflectionField<DeploymentStates>(p, "DeploymentState", DeploymentStates.PREDEPLOYED);
+                p.GetType().GetMethod("PreDeploy").Invoke(p, null);
+            }
+
             public static bool IsDeployed(PartModule p)
             {
-                //Debug.Log("[LRTF] init:" + GetReflectionField<string>(p, "depState"));
                 return GetReflectionField<bool>(p, "armed") || GetReflectionProperty<bool>(p, "IsDeployed");
-                //RealChuteFAR r = new RealChuteFAR();
-                //r.depState
             }
 
             public static DeploymentStates GetDeploymentState(PartModule p)
@@ -202,7 +206,6 @@ namespace LRTF
             public static void SetDeploymentAltitude(PartModule p, float alt = 0)
             {
                 SetReflectionField<float>(p, "deployAltitude", alt);
-                RealChuteFAR r = new RealChuteFAR();
             }
 
             public static float GetDeployAltitude(PartModule p)
