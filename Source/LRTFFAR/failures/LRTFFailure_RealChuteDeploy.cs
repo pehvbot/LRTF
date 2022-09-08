@@ -1,8 +1,9 @@
 ﻿using TestFlightAPI;
+using RealChute;
 
-namespace TestFlight.LRTF
+namespace TestFlight.LRTF.LRTFRealChute
 {
-    public class LRTFFailure_ParachuteDeploy : LRTFFailureBase_Parachute
+    public class LRTFFailure_RealChuteDeploy : LRTFFailureBase_RealChute
     {
         [KSPField]
         public FloatCurve deploymentChanceCurve;
@@ -25,7 +26,7 @@ namespace TestFlight.LRTF
                 else
                     deploymentChanceCurve.Add(0f, 1f);
             }
-            
+
             base.OnLoad(node);
         }
 
@@ -40,7 +41,7 @@ namespace TestFlight.LRTF
 
         public override void OnUpdate()
         {
-            if (!parachuteActive && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfParachutes && (chute.deploymentState == ModuleParachute.deploymentStates.ACTIVE || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED))
+            if (!parachuteActive && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfParachutes && (chute.armed || chute.AnyDeployed))
             {
                 parachuteActive = true;
                 if (deploymentChance < core.RandomGenerator.NextDouble())
@@ -54,7 +55,14 @@ namespace TestFlight.LRTF
 
         public override void DoFailure()
         {
-            chute.deploymentState = ModuleParachute.deploymentStates.STOWED;
+            chute.armed = false;
+            chute.DeactivateRC();
+            foreach (Parachute p in chute.parachutes)
+            {
+                p.Cut();
+                p.Repack(); 
+
+            }
             chute.enabled = false;
             core.ModifyFlightData(duFail, true);
             deploymentChanceString = failureTitle;

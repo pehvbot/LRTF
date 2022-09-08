@@ -7,8 +7,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
-//using RealChute;
-using FerramAerospaceResearch.RealChuteLite;
+using RealChute;
+using FerramAerospaceResearch;
 
 namespace LRTF
 {
@@ -189,11 +189,26 @@ namespace LRTF
 
             public static void PreDeploy(PartModule p)
             {
-                SetReflectionField<DeploymentStates>(p, "DeploymentState", DeploymentStates.PREDEPLOYED);
                 p.GetType().GetMethod("PreDeploy").Invoke(p, null);
             }
 
+            public static void ActivateRC(PartModule p)
+            {
+                p.GetType().GetMethod("ActivateRC").Invoke(p, null);
+            }
+
+            public static void DeactivateRC(PartModule p)
+            {
+                p.GetType().GetMethod("DeactivateRC").Invoke(p, null);
+                SetReflectionField<bool>(p, "armed", false);
+            }
+
             public static bool IsDeployed(PartModule p)
+            {
+                return GetReflectionProperty<bool>(p, "IsDeployed");
+            }
+
+            public static bool IsArmedOrDeployed(PartModule p)
             {
                 return GetReflectionField<bool>(p, "armed") || GetReflectionProperty<bool>(p, "IsDeployed");
             }
@@ -203,9 +218,9 @@ namespace LRTF
                 return GetReflectionProperty<DeploymentStates>(p, "DeploymentState");
             }
 
-            public static void SetDeploymentAltitude(PartModule p, float alt = 0)
+            public static void SetDeploymentState(PartModule p, DeploymentStates state)
             {
-                SetReflectionField<float>(p, "deployAltitude", alt);
+                SetReflectionField<DeploymentStates>(p, "SetDeploymentState", state);
             }
 
             public static float GetDeployAltitude(PartModule p)
@@ -213,12 +228,69 @@ namespace LRTF
                 return GetReflectionField<float>(p, "deployAltitude");
             }
 
+            public static void SetDeploymentAltitude(PartModule p, float alt = 0)
+            {
+                SetReflectionField<float>(p, "deployAltitude", alt);
+            }
+
             public static void AssumeDragCubePosition(PartModule p, string pos)
             {
                 p.GetType().GetMethod("AssumeDragCubePosition").Invoke(p, new object[] { pos });
             }
         }
+        /*
+        public class RealChuteWrapper
+        {
+            private static Assembly RealChute = null;
+            private static bool tried = false;
 
+            public static bool available
+            {
+                get
+                {
+                    bool loaded = (RealChute != null);
+                    if (!loaded && !tried)
+                    {
+                        for (int i = 0; i < AssemblyLoader.loadedAssemblies.Count; i++)
+                        {
+                            var Asm = AssemblyLoader.loadedAssemblies[i];
+                            if (Asm.dllName == "RealChute")
+                            {
+                                loaded = true;
+                                RealChute = Asm.assembly;
+                                Debug.Log("[LRTF]: RealChute Detected.");
+                            }
+                        }
+                        tried = true;
+                    }
+                    return loaded;
+                }
+            }
+
+            public static void ActivateRC(PartModule p)
+            {
+                p.GetType().GetMethod("ActivateRC").Invoke(p, null);
+            }
+
+            public static void DeactivateRC(PartModule p)
+            {
+                p.GetType().GetMethod("DeactivateRC").Invoke(p, null);
+                SetReflectionField<bool>(p, "armed", false);
+                dynamic parachutes = GetReflectionField<object>(p, "parachutes");
+                Debug.Log("[LRTF] parachutes:" + parachutes);
+            }
+
+            public static bool IsDeployed(PartModule p)
+            {
+                return GetReflectionProperty<bool>(p, "AnyDeployed");
+            }
+
+            public static bool IsArmedOrDeployed(PartModule p)
+            {   
+                return GetReflectionField<bool>(p, "armed") || GetReflectionProperty<bool>(p, "AnyDeployed");
+            }
+        }
+        */
         //Relfection Helpers. 
         private static T GetReflectionField<T>(PartModule p, string field_name)
         {

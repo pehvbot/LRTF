@@ -25,6 +25,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>BeforeBuild</type>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -70,6 +77,7 @@
     <Reference Include="RealChute">
       <HintPath>..\dlls_1_12_2\RealChute.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -138,11 +146,6 @@
     <Compile Include="LRTFReliability.cs" />
     <Compile Include="LRTFFailureBase_Parachute.cs" />
     <Compile Include="LRTFEditor.cs" />
-    <Compile Include="ModWrapper.cs" />
-    <Compile Include="recorders\LRTFDataRecorder_RealChuteFAR.cs" />
-    <Compile Include="failures\parachutes\LRTFFailure_RealChuteFARFail.cs" />
-    <Compile Include="LRTFFailureBase_RealChuteFAR.cs" />
-    <Compile Include="failures\parachutes\LRTFFailure_RealChuteFARPartial.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="failures\aerodynamics\" />

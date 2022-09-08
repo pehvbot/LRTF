@@ -1,8 +1,6 @@
-﻿using LRTF;
-
-namespace TestFlight.LRTF
+﻿namespace TestFlight.LRTF
 {
-    public class LRTFFailure_ParachuPartial : LRTFFailureBase_Parachute
+    public class LRTFFailure_ParachutePartial : LRTFFailureBase_Parachute
     {
         [KSPField(isPersistant = true)]
         public float deployAltitude;
@@ -14,7 +12,7 @@ namespace TestFlight.LRTF
             chute.Fields["deployAltitude"].guiActive = false;
 
             if (chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED)
-            chute.AssumeDragCubePosition("SEMIDEPLOYED");
+                chute.AssumeDragCubePosition("SEMIDEPLOYED");
 
             base.DoFailure();
         }

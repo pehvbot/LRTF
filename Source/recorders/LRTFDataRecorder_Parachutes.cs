@@ -1,7 +1,5 @@
 ﻿using TestFlightAPI;
 using UnityEngine;
-using LRTF;
-using FerramAerospaceResearch.RealChuteLite;
 
 namespace TestFlight.LRTF
 {
@@ -24,8 +22,6 @@ namespace TestFlight.LRTF
                 isEnabled = false;
                 Debug.Log("[LRTF] ModuleParachute not found for " + part.name + "!  Recording will be disabled for this part!");
             }
-
-            RealChuteFAR f = new RealChuteFAR();
         }
 
         public override bool IsPartOperating()
@@ -33,15 +29,9 @@ namespace TestFlight.LRTF
             if (!isEnabled || !HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfParachutes || TimeWarp.CurrentRate > 4)
                 return false;
 
-            if(far != null)
-            {
-                return ModWrapper.FerramWrapper.IsDeployed(far);
-            }
-            if(chute != null)
-                return (chute.deploymentState
-                    == ModuleParachute.deploymentStates.ACTIVE || chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED);
-
-            return false;
+            return (chute.deploymentState == ModuleParachute.deploymentStates.ACTIVE ||
+                chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED ||
+                chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED);
         }
 
         public override bool IsRecordingFlightData()

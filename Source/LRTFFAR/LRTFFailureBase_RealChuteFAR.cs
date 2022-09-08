@@ -1,21 +1,19 @@
 ﻿using TestFlightAPI;
 using UnityEngine;
+using FerramAerospaceResearch.RealChuteLite;
 
 namespace TestFlight.LRTF
 {
 
     public class LRTFFailureBase_RealChuteFAR : LRTFFailureBase
     {
-        protected PartModule chute;
+        protected RealChuteFAR chute;
 
         public override void OnStart(PartModule.StartState state)
         {
             base.OnStart(state);
-            foreach (var p in part.Modules)
-            {
-                if (p.moduleName == "RealChuteFAR")
-                    chute = p;
-            }
+            chute = part.FindModuleImplementing<RealChuteFAR>();
+
             if (chute == null )
                 Debug.Log("[LRTF] RealChuteFAR not found for " + part.name + "!  " + moduleName + " failures will be disabled for this part!");
 

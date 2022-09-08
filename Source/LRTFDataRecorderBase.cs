@@ -15,7 +15,7 @@ namespace TestFlightAPI
 
         private ListDictionary<string, float> dataRecorders = new ListDictionary<string, float>();
 
-        public new void OnEnable()
+        public void OnEnable()
         {
             if (core == null)
                 core = TestFlightUtil.GetCore(this.part, Configuration);

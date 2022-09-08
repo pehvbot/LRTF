@@ -1,8 +1,9 @@
 ﻿using TestFlightAPI;
+using UnityEngine;
 
-namespace TestFlight.LRTF
+namespace TestFlight.LRTF.LRTFFAR
 {
-    public class LRTFFailure_ParachuteDeploy : LRTFFailureBase_Parachute
+    public class LRTFFailure_RealChuteFARDeploy : LRTFFailureBase_RealChuteFAR
     {
         [KSPField]
         public FloatCurve deploymentChanceCurve;
@@ -14,6 +15,13 @@ namespace TestFlight.LRTF
 
         [KSPField(isPersistant = true)]
         private bool parachuteActive = false;
+
+        [KSPField(isPersistant = true)]
+        bool GUIDisarm;
+        [KSPField(isPersistant = true)]
+        bool GUIDeploy;
+        [KSPField(isPersistant = true)]
+        bool GUIRepack;
 
         public override void OnLoad(ConfigNode node)
         {
@@ -40,7 +48,7 @@ namespace TestFlight.LRTF
 
         public override void OnUpdate()
         {
-            if (!parachuteActive && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfParachutes && (chute.deploymentState == ModuleParachute.deploymentStates.ACTIVE || chute.deploymentState == ModuleParachute.deploymentStates.DEPLOYED || chute.deploymentState == ModuleParachute.deploymentStates.SEMIDEPLOYED))
+            if (!parachuteActive && HighLogic.CurrentGame.Parameters.CustomParams<LRTFGameSettings>().lrtfParachutes && (chute.armed || chute.IsDeployed))
             {
                 parachuteActive = true;
                 if (deploymentChance < core.RandomGenerator.NextDouble())
@@ -49,13 +57,23 @@ namespace TestFlight.LRTF
                     Failed = true;
                 }
             }
-
         }
 
         public override void DoFailure()
         {
-            chute.deploymentState = ModuleParachute.deploymentStates.STOWED;
-            chute.enabled = false;
+            if (hasStarted)
+            {
+                GUIDisarm = chute.Events["GUIDisarm"].guiActive;
+                GUIDeploy = chute.Events["GUIDeploy"].guiActive;
+                GUIRepack = chute.Events["GUIRepack"].guiActive;
+            }
+
+            chute.Events["GUIDisarm"].guiActive = false;
+            chute.Events["GUIDeploy"].guiActive = false;
+            chute.Events["GUIRepack"].guiActive = false;
+
+            chute.DeactivateRC();
+            chute.armed = false;
             core.ModifyFlightData(duFail, true);
             deploymentChanceString = failureTitle;
             base.DoFailure();
@@ -64,8 +82,13 @@ namespace TestFlight.LRTF
         public override float DoRepair()
         {
             base.DoRepair();
-            chute.enabled = true;
             parachuteActive = false;
+
+            chute.Events["GUIDisarm"].guiActive = GUIDisarm;
+            chute.Events["GUIDeploy"].guiActive = GUIDeploy;
+            chute.Events["GUIRepack"].guiActive = GUIRepack;
+            chute.ActivateRC();
+
             deploymentChanceString = $"{deploymentChance:P}";
             return 0f;
         }
