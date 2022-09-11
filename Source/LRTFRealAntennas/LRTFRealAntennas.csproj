@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B990BBBE-3F9F-414C-A596-0866856DC6C6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>LRTFRealAntennas</RootNamespace>
+    <AssemblyName>LRTFRealAntennas</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>BeforeBuild</type>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="LRTFFailureBase_RealAntennas.cs" />
+    <Compile Include="LRTFDataRecorder_RealAntennas.cs" />
+    <Compile Include="failures\LRTFFailure_RealAntennasFailure.cs" />
+    <Compile Include="failures\LRTFFailure_RealAntennasPartial.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="failures\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\..\dlls_1_12_2\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\dlls_1_12_2\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ClickThroughBlocker">
+      <HintPath>..\..\dlls_1_12_2\ClickThroughBlocker.dll</HintPath>
+    </Reference>
+    <Reference Include="ContractConfigurator">
+      <HintPath>..\..\dlls_1_12_2\ContractConfigurator.dll</HintPath>
+    </Reference>
+    <Reference Include="FerramAerospaceResearch.Base">
+      <HintPath>..\..\dlls_1_12_2\FerramAerospaceResearch.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="FerramAerospaceResearch">
+      <HintPath>..\..\dlls_1_12_2\FerramAerospaceResearch.dll</HintPath>
+    </Reference>
+    <Reference Include="ferramGraph">
+      <HintPath>..\..\dlls_1_12_2\ferramGraph.dll</HintPath>
+    </Reference>
+    <Reference Include="KSPAssets">
+      <HintPath>..\..\dlls_1_12_2\KSPAssets.dll</HintPath>
+    </Reference>
+    <Reference Include="MagiCore">
+      <HintPath>..\..\dlls_1_12_2\MagiCore.dll</HintPath>
+    </Reference>
+    <Reference Include="ModularFlightIntegrator">
+      <HintPath>..\..\dlls_1_12_2\ModularFlightIntegrator.dll</HintPath>
+    </Reference>
+    <Reference Include="ModuleManager.4.2.1">
+      <HintPath>..\..\dlls_1_12_2\ModuleManager.4.2.1.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib">
+      <HintPath>..\..\dlls_1_12_2\mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="RealAntennas">
+      <HintPath>..\..\dlls_1_12_2\RealAntennas.dll</HintPath>
+    </Reference>
+    <Reference Include="RealChute">
+      <HintPath>..\..\dlls_1_12_2\RealChute.dll</HintPath>
+    </Reference>
+    <Reference Include="TestFlight">
+      <HintPath>..\..\dlls_1_12_2\TestFlight.dll</HintPath>
+    </Reference>
+    <Reference Include="TestFlightAPI">
+      <HintPath>..\..\dlls_1_12_2\TestFlightAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="TestFlightContracts">
+      <HintPath>..\..\dlls_1_12_2\TestFlightContracts.dll</HintPath>
+    </Reference>
+    <Reference Include="TestFlightCore">
+      <HintPath>..\..\dlls_1_12_2\TestFlightCore.dll</HintPath>
+    </Reference>
+    <Reference Include="ToolbarControl">
+      <HintPath>..\..\dlls_1_12_2\ToolbarControl.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>..\..\dlls_1_12_2\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\dlls_1_12_2\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\dlls_1_12_2\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\..\dlls_1_12_2\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\dlls_1_12_2\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\..\dlls_1_12_2\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule">
+      <HintPath>..\..\dlls_1_12_2\UnityEngine.JSONSerializeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>..\..\dlls_1_12_2\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\dlls_1_12_2\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\dlls_1_12_2\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\..\dlls_1_12_2\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>..\..\dlls_1_12_2\UnityEngine.UnityWebRequestModule.dll</HintPath>
+    </Reference>
+    <Reference Include="LRTF">
+      <HintPath>..\bin\Release\LRTF.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

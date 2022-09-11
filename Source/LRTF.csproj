@@ -146,6 +146,7 @@
     <Compile Include="LRTFReliability.cs" />
     <Compile Include="LRTFFailureBase_Parachute.cs" />
     <Compile Include="LRTFEditor.cs" />
+    <Compile Include="LRTFReliability_TestFail.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="failures\aerodynamics\" />

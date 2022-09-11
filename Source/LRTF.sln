@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRTF", "LRTF.csproj", "{CB9
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRTFRealChute", "LRTFRealChute\LRTFRealChute.csproj", "{D33B77F3-B0D5-4426-B69C-EFC2D6F36995}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRTFFAR", "LRTFFAR\LRTFFAR.csproj", "{B990BBBE-3F9F-414C-A596-0866856DC6C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRTFRealAntennas", "LRTFRealAntennas\LRTFRealAntennas.csproj", "{B990BBBE-3F9F-414C-A596-0866856DC6C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
